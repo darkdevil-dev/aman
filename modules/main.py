@@ -8,6 +8,7 @@ import requests
 import subprocess
 import pyrogram
 import logging
+import pymongo
 
 import core as helper
 from utils import progress_bar
@@ -22,7 +23,15 @@ from pyrogram.errors import FloodWait
 from pyrogram.errors.exceptions.bad_request_400 import StickerEmojiInvalid
 from pyrogram.types.messages_and_media import message
 from pyrogram.types import InlineKeyboardButton, InlineKeyboardMarkup
+from pymongo import MongoClient
 
+
+# Connect to MongoDB using the URI from your config file
+mongo_client = pymongo.MongoClient(Config.MONGO_URI)
+db = mongo_client['aman']  # Replace 'your_database_name' with your database name
+interactions_collection = db['interactions']  # Collection for tracking interactions
+authorized_users_collection = db['authorized_users']
+unauthorized_users_collection = db['unauthorized_users']
 
 bot = Client(
     "bot",
@@ -30,59 +39,139 @@ bot = Client(
     api_hash=Config.API_HASH,
     bot_token=Config.BOT_TOKEN)
 
-              
+
+
 @bot.on_message(filters.command(["start"]))
 async def account_login(bot: Client, m: Message):
     keyboard = [
         [
-            InlineKeyboardButton("🫧 ᴏᴡɴᴇʀ 🫧", url="https://t.me/LegendRobot"),
-            InlineKeyboardButton("🍷 ᴜᴘᴅᴀᴛᴇꜱ 🍷", url="https://t.me/LegendUnion")
-        ],
-        [
-            InlineKeyboardButton("🍁 ʜᴇʟᴘ ᴀɴᴅ ᴄᴏᴍᴍᴀɴᴅꜱ 🍁", callback_data="help_command")
-        ],
-        [
-            InlineKeyboardButton("❤️ ᴜᴘɢʀᴀᴅᴇ ❤️", callback_data="upgrade_command")
+            InlineKeyboardButton("DEVELOPER", url="https://t.me/LegendRobot"),
+            InlineKeyboardButton("UPDATES", url="https://t.me/LegendUnion")
         ]
     ]
     reply_markup = InlineKeyboardMarkup(keyboard)
-    caption = "**🍁 ▸ ʜᴇʏ ʙᴀʙʏ 👋!** \n\n**🖤 ▸ ɪ ᴄᴀɴ ᴅᴀᴡɴʟᴏᴀᴅ ᴛxᴛ ᴛᴏ ᴠɪᴅᴇᴏꜱ** \n**🤎️ ▸ ᴀʟʟ-ɪɴ-ᴏɴᴇ ᴅᴀᴡɴʟᴏᴀᴅᴇʀ ʙᴏᴛ**  \n\n**🍷 ᴛᴀᴘ ᴛᴏ ᴄᴏᴍᴍᴀɴᴅs ᴍʏ ᴅᴇᴀʀ** \n\n**🍹 ᴍᴀᴅᴇ ʙʏ ➪ 🦋[ᴍʏ ᴄᴜᴛᴇ ᴏᴡɴᴇʀ](https://t.me/LegendRobot)❤️**"
-    
-    # Assuming 'm' is defined somewhere within the function
-    await m.reply_photo(
-        photo="https://graph.org/file/abe1a0e9c702ee11b71ab.jpg",
-        caption=caption,
+    await m.reply_text(f"**Hey {m.from_user.mention} 👋!**\n\n➨ 𝗜 𝗮𝗺 𝗮 𝗧𝗫𝗧 𝗗𝗮𝘄𝗻𝗹𝗼𝗮𝗱𝗲𝗿 𝗕𝗼𝘁 𝗠𝗮𝗱𝗲 𝗪𝗶𝘁𝗵 ❤️ \n\n➨𝗨𝘀𝗲 /help 𝗸𝗻𝗼𝘄 𝗮𝗯𝗼𝘂𝘁 𝗺𝗲.\n➨𝗨𝘀𝗲 /upgrade 𝗙𝗼𝗿 𝗖𝗵𝗲𝗰𝗸 𝗠𝗲𝗺𝗯𝗲𝗿𝘀𝗵𝗶𝗽 𝗣𝗿𝗶𝗰𝗲 \n\n➨ 𝗠𝗼𝗱𝗶𝗳𝗶𝗲𝗱 𝗕𝘆 : @LegendRobot",
         reply_markup=reply_markup
     )
 
+    # Track user interaction with the /start command
+    user_id = m.from_user.id
+    chat_id = m.chat.id
+    interaction_data = {
+        "user_id": user_id,
+        "chat_id": chat_id,
+        "timestamp": time.time(),
+        "command": "/start"
+    }
+    interactions_collection.insert_one(interaction_data)
 
-@bot.on_message(filters.command("stopbaby"))
+
+# Handler for `/stats` command
+@bot.on_message(filters.command("stats"))
+async def stats_command(bot: Client, m: Message):
+    # Get the number of authorized users
+    num_authorized_users = authorized_users_collection.count_documents({})
+    # Get the number of unauthorized users
+    num_unauthorized_users = unauthorized_users_collection.count_documents({})
+    # Count the number of interactions for the /start command
+    num_start_interactions = interactions_collection.count_documents({"command": "/start"})
+
+    # Construct the statistics message
+    stats_message = (
+        f"⌬ **Bot Stats** :\n"
+        f"**┠ Total Users:** {num_start_interactions}\n"
+        f"**┠ Authorized Users:** {num_authorized_users}\n"
+        f"**┖ Unauthorized Users:** {num_unauthorized_users}\n"
+        # Add more statistics if needed
+    )
+
+    # Send the statistics message
+    await m.reply_text(stats_message, quote=True)
+
+
+
+@bot.on_message(filters.command("stop"))
 async def restart_handler(_, m):
-    await m.reply_text("**ᏕᏖᎾᏢ ᏰᎯᏰᎽ**❤️", True)
+    await m.reply_text("**Stopped**🚦", True)
     os.execl(sys.executable, sys.executable, *sys.argv)
-    
-@bot.on_message(filters.command(["angel"]))
-async def account_login(bot: Client, m: Message):
-    editable = await m.reply_text('ƬƠ ƊƛƜƝԼƠƛƊ ƛ ƬҲƬ ƑƖԼЄ ƧЄƝƊ ӇЄƦЄ ⚡️')
-    input: Message = await bot.listen(editable.chat.id)
-    x = await input.download()
-    await input.delete(True)
 
-    path = f"./downloads/{m.chat.id}"
+# Handler to authorize a user
+@bot.on_message(filters.command("a"))
+async def authorize_user(bot: Client, m: Message):
+    if m.from_user.id == 5631563685:  # Replace with your bot's owner ID
+        try:
+            user_to_authorize = int(m.text.split(' ', 1)[1])
+            # Check if user ID already exists
+            existing_user = authorized_users_collection.find_one({'user_id': user_to_authorize})
+            if existing_user:
+                await m.reply(f"User {user_to_authorize} is already authorized.", quote=True)
+            else:
+                # Add user to the authorized collection
+                authorized_users_collection.insert_one({'user_id': user_to_authorize})
+                await m.reply(f"User {user_to_authorize} has been authorized successfully!", quote=True)
+        except IndexError:
+            await m.reply("Please provide the user's ID to authorize.", quote=True)
+        except ValueError:
+            await m.reply("Invalid user ID provided.", quote=True)
+    else:
+        await m.reply("You are not authorized to perform this action.", quote=True)
 
-    try:
-       with open(x, "r") as f:
-           content = f.read()
-       content = content.split("\n")
-       links = []
-       for i in content:
-           links.append(i.split("://", 1))
-       os.remove(x)
-            # print(len(links)
-    except:
-           await m.reply_text("**ɪɴᴠᴀʟɪᴅ ꜰɪʟᴇ ɪɴᴘᴜᴛ.**")
-           os.remove(x)
-           return
+
+# Handler to unauthorize a user
+@bot.on_message(filters.command("ua"))
+async def unauthorize_user(bot: Client, m: Message):
+    if m.from_user.id == 5631563685:
+        try:
+            user_to_unauthorize = int(m.text.split(' ', 1)[1])
+            # Remove user from the authorized collection
+            result = authorized_users_collection.delete_one({'user_id': user_to_unauthorize})
+            if result.deleted_count > 0:
+                await m.reply(f"User {user_to_unauthorize} has been unauthorized successfully!", quote=True)
+            else:
+                await m.reply(f"User {user_to_unauthorize} is not authorized.", quote=True)
+        except IndexError:
+            await m.reply("Please provide the user's ID to unauthorize.", quote=True)
+        except ValueError:
+            await m.reply("Invalid user ID provided.", quote=True)
+    else:
+        await m.reply("You are not authorized to perform this action.", quote=True)
+        
+# Helper function to track unauthorized users
+def track_unauthorized_user(user_id):
+    # Check if the user_id is not already in the collection
+    if not unauthorized_users_collection.find_one({'user_id': user_id}):
+        unauthorized_users_collection.insert_one({'user_id': user_id, 'timestamp': time.time()})
+
+@bot.on_message(filters.command("devil"))
+async def love_command(bot: Client, m: Message):
+    user_id = m.from_user.id
+    # Check if user is authorized
+    if authorized_users_collection.find_one({'user_id': user_id}) is None:
+        # Track unauthorized user
+        track_unauthorized_user(user_id)
+        await m.reply(f"Hey {m.from_user.mention}, you are not authorized to use this command.", quote=True)
+    else:
+        editable = await m.reply_text('ƬƠ ƊƛƜƝԼƠƛƊ ƛ ƬҲƬ ƑƖԼЄ ƧЄƝƊ ӇЄƦЄ ⚡️')
+        input: Message = await bot.listen(editable.chat.id)
+        x = await input.download()
+        await input.delete(True)
+
+        path = f"./downloads/{m.chat.id}"
+
+        try:
+            with open(x, "r") as f:
+                content = f.read()
+            content = content.split("\n")
+            links = []
+            for i in content:
+                links.append(i.split("://", 1))
+            os.remove(x)
+                # print(len(links)
+        except:
+            await m.reply_text("**ƖƝᐯƛԼƖƊ ƑƖԼЄ ƖƝƤƲƬ.**")
+            os.remove(x)
+            return
+
 
     await editable.edit(f"ƬƠƬƛԼ ԼƖƝҠƧ ƑƠƲƝƊ ƛƦЄ🔗🔗 **{len(links)}**\n\nƧЄƝƊ ƑƦƠM ƜӇЄƦЄ ᎩƠƲ ƜƛƝƬ ƬƠ ƊƛƜƝԼƠƛƊ ƖƝƖƬƖƛԼ ƖƧ **1**")
     input0 = await bot.listen(editable.chat.id)
@@ -129,7 +218,7 @@ async def account_login(bot: Client, m: Message):
     else:
         MR = raw_text3
    
-    await editable.edit("ƝƠƜ ƧƐƝƊ ƬӇƐ ƬӇƲMƁ ƲƦԼ\nEg » https://graph.org/file/3c56254a37fcf69c725e4.jpg \nƠƦ ƖƑ ƊƠƝ'Ƭ ƜƛƝƬ ƬӇƲMƁƝƛƖԼ ƧƐƝƊ = no")
+    await editable.edit("ƝƠƜ ƧƐƝƊ ƬӇƐ ƬӇƲMƁ ƲƦԼ\nEg » https://graph.org/file/54ded40501145003e48bf.jpg \n\nƠƦ ƖƑ ƊƠƝ'Ƭ ƜƛƝƬ ƬӇƲMƁƝƛƖԼ ƧƐƝƊ = no")
     input6 = message = await bot.listen(editable.chat.id)
     raw_text6 = input6.text
     await input6.delete(True)
@@ -164,7 +253,7 @@ async def account_login(bot: Client, m: Message):
 
             elif '/master.mpd' in url:
              id =  url.split("/")[-2]
-             url =  "https://psitoffers.store/testkey.php?vid=" + vidId + "&quality=" +raw_text2
+             url =  "https://psitoffers.store/testkey.php?vid=" + id + "&quality="+raw_text2
 
             name1 = links[i][0].replace("\t", "").replace(":", "").replace("/", "").replace("+", "").replace("#", "").replace("|", "").replace("@", "").replace("*", "").replace(".", "").replace("https", "").replace("http", "").strip()
             name = f'{str(count).zfill(3)}) {name1[:60]}'
@@ -208,7 +297,7 @@ async def account_login(bot: Client, m: Message):
                         time.sleep(e.x)
                         continue
                 else:
-                    Show = f"**⥥🅓🅞🅦🅝🅛🅞🅐🅓🅘🅝🅖... »**\n\n**🍁ƝƛMЄ »** `{name}\n❄𝑄𝑈𝐴𝐿𝐼𝑇𝑌 » {raw_text2}`\n\n**🔗ƲƦԼ »** `{url}`"
+                    Show = f"**⥥ 🄳🄾🅆🄽🄻🄾🄰🄳🄸🄽🄶⬇️⬇️... »**\n\n**📝Name »** `{name}\n❄Quality » {raw_text2}`\n\n**🔗URL »** `{url}`"
                     prog = await m.reply_text(Show)
                     res_file = await helper.download_video(url, cmd, name)
                     filename = res_file
@@ -225,39 +314,30 @@ async def account_login(bot: Client, m: Message):
 
     except Exception as e:
         await m.reply_text(e)
-    await m.reply_text("**ᎠᎾᏁᎬ ᏰᎯᏰᎽ🌹**")
+    await m.reply_text("**ᗫOᑎᙓ ᙖOSS😎**")
 
-@bot.on_callback_query(filters.regex("^help_command$"))
-async def help_command_handler(_, callback_query):
-    keyboard = [
-        [
-            InlineKeyboardButton("❤️ ᴜᴘɢʀᴀᴅᴇ ❤️", callback_data="upgrade_command"),
-            InlineKeyboardButton("🍷ꜱᴜᴘᴘᴏʀᴛ🍷", url="https://t.me/LegendBotzs")
-        ]
-    ]
-    reply_markup = InlineKeyboardMarkup(keyboard)
-    reply_markup = InlineKeyboardMarkup(keyboard)
-    await callback_query.message.edit_text("**💖 Hɘɭp Mɘnu :** \n\n/start ➤ For Check Yukí Is Alive.",
-        reply_markup=reply_markup
-    )
+
+
+@bot.on_message(filters.command("help"))
+async def restart_handler(_, m):
+    await m.reply_text("**💖 Hɘɭp Mɘnu :** \n\n/help ➤ Shows this message.\n\n/start ➤ Checking Bot Active or Not.\n\n/upgrade ➤ For Check Membership Price.\n\n/stop ➤ For Restarting The Bot.", True)
    
-@bot.on_callback_query(filters.regex("^upgrade_command$"))
-async def upgrade_command_handler(_, callback_query):
+@bot.on_message(filters.command("upgrade"))
+async def restart_handler(_, m):
     keyboard = [
         [
-            InlineKeyboardButton("🫧Admin🫧", url="https://t.me/LegendRobot"),
-            InlineKeyboardButton("🍹Close🍹", callback_data="close_upgrade")
+            InlineKeyboardButton("Admin", url="https://t.me/LegendRobot"),
+            InlineKeyboardButton("Close", callback_data="close_upgrade")
         ]
     ]
     reply_markup = InlineKeyboardMarkup(keyboard)
     reply_markup = InlineKeyboardMarkup(keyboard)
-    await callback_query.message.edit_text("➻ 𝗙𝗿𝗲𝗲 𝗣𝗹𝗮𝗻 𝗨𝘀𝗲𝗿\n    ➥ Only One txt Dawnload\n    ➥ Price 0\n\n➻ 𝗩𝗜𝗣\n    ➥ Unlimited Dawnload\n    ➥ Price Rs 500  🇮🇳/🌎 30 days Validity\n\n\nꜰᴏʀ ᴍᴇᴍʙᴇʀꜱʜɪᴘ ᴄᴏɴᴛᴀᴄᴛ ᴛᴏ ᴄᴜᴛᴇ ᴀᴅᴍɪɴ.",
+    await m.reply_text("➻ 𝗙𝗿𝗲𝗲 𝗣𝗹𝗮𝗻 𝗨𝘀𝗲𝗿\n    ➥ Only One Day Demo\n    ➥ Price 0\n\n➻ 𝗩𝗜𝗣\n    ➥ Unlimited Dawnload\n    ➥ Price Rs 500  🇮🇳/🌎 30 days Validity\n\n\nꜰᴏʀ ᴍᴇᴍʙᴇʀꜱʜɪᴘ ᴄᴏɴᴛᴀᴄᴛ ᴛᴏ ᴀᴅᴍɪɴ.",
         reply_markup=reply_markup
     )
 
 @bot.on_callback_query(filters.regex("^close_upgrade$"))
 async def close_upgrade(_, callback_query):
-    await callback_query.message.delete()
-   
+    await callback_query.message.delete()   
          
 bot.run()
