@@ -7,7 +7,7 @@ from pyrogram import Client
 
 class Config(object):
     # Define your configuration variables here
-    BOT_TOKEN = os.environ.get("BOT_TOKEN", "7150060423:AAHg8r5e39v0EB-rKIzwHeQbwrYXamc-uaI")
+    BOT_TOKEN = os.environ.get("BOT_TOKEN", "6735383354:AAFSoy2hs-qYIY-j30DKLCUfeCsJ_QSSY14")
     APP_ID = int(os.environ.get("APP_ID", "24055031"))
     API_HASH = os.environ.get("API_HASH", "8421a60ca38e8dbe23feff45edd91688")
     OWNER_ID = "5631563685"
