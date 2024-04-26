@@ -7,7 +7,7 @@
         "video-extract",
         "pyrogram"
     ],
-    "repository": "https://github.com/amangautamdev/aman",
+    "repository": "https://github.com/darkdevil-dev/aman",
     "success_url": "https://t.me/LegendRobot",
     "stack": "container",
     "env": {
