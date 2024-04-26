@@ -4,7 +4,8 @@ RUN apt-get update -y && apt-get upgrade -y \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
 
-COPY . /app/
-WORKDIR /app/
-RUN pip3 install --no-cache-dir --upgrade --requirement Installer
-CMD python3 modules/main.py
+COPY requirements.txt /app/
+RUN pip3 install -r requirements.txt
+COPY . /app
+
+CMD gunicorn app:app & python3 modules/main.py
