@@ -186,7 +186,7 @@ async def love_command(bot: Client, m: Message):
     raw_text = input0.text
     await input0.delete(True)
 
-    await editable.edit("ЄƝƬЄƦ ƁƛƬƇӇ ƝƛMЄ ƠƦ ƧЄƝƊ "__batch__" ƑƠƦ ƓƦƛƁƖƝƓ ƑƦƠM ƬҲƬ ƑƖԼЄƝƛMЄ")
+    await editable.edit("ЄƝƬЄƦ ƁƛƬƇӇ ƝƛMЄ ƠƦ ƧЄƝƊ '__batch__' ƑƠƦ ƓƦƛƁƖƝƓ ƑƦƠM ƬҲƬ ƑƖԼЄƝƛMЄ")
     input1 = await bot.listen(editable.chat.id)
     raw_text0 = input1.text
     await input1.delete(True)
@@ -220,7 +220,7 @@ async def love_command(bot: Client, m: Message):
     
     
 
-    await editable.edit("ЄƝƬЄƦ ᎩƠƲƦ ƝƛMЄ ƠƦ ƧЄƝƊ "__n__" ƑƠƦ ƲƧЄ ƊЄƑƛƲԼƬ")
+    await editable.edit("ЄƝƬЄƦ ᎩƠƲƦ ƝƛMЄ ƠƦ ƧЄƝƊ '__n__' ƑƠƦ ƲƧЄ ƊЄƑƛƲԼƬ")
     input3: Message = await bot.listen(editable.chat.id)
     raw_text3 = input3.text
     await input3.delete(True)
