@@ -186,15 +186,15 @@ async def love_command(bot: Client, m: Message):
     raw_text = input0.text
     await input0.delete(True)
 
-    await editable.edit("ЄƝƬЄƦ ƁƛƬƇӇ ƝƛMЄ ƠƦ ƧЄƝƊ '__batch__' ƑƠƦ ƓƦƛƁƖƝƓ ƑƦƠM ƬҲƬ ƑƖԼЄƝƛMЄ")
+    await editable.edit("ЄƝƬЄƦ ƁƛƬƇӇ ƝƛMЄ ƠƦ ƧЄƝƊ "__batch__" ƑƠƦ ƓƦƛƁƖƝƓ ƑƦƠM ƬҲƬ ƑƖԼЄƝƛMЄ")
     input1 = await bot.listen(editable.chat.id)
     raw_text0 = input1.text
     await input1.delete(True)
     await input1.delete(True)
     if raw_text0 == 'batch':
-        batch_name = file_name
+        b_name = file_name
     else:
-        batch_name = raw_text0
+        b_name = raw_text0
 
     await editable.edit("ЄƝƬЄƦ ƦЄƧƠԼƲƬƖƠƝ 🚀\n➥ 144,240,360,480,720,1080 \n\nƤԼЄƛƧЄ ƇӇƠƠƧЄ ƢƲƛԼƖƬᎩ")
     input2: Message = await bot.listen(editable.chat.id)
@@ -220,7 +220,7 @@ async def love_command(bot: Client, m: Message):
     
     
 
-    await editable.edit("ЄƝƬЄƦ ᎩƠƲƦ ƝƛMЄ ƠƦ ƧЄƝƊ '__n__' ƑƠƦ ƲƧЄ ƊЄƑƛƲԼƬ")
+    await editable.edit("ЄƝƬЄƦ ᎩƠƲƦ ƝƛMЄ ƠƦ ƧЄƝƊ "__n__" ƑƠƦ ƲƧЄ ƊЄƑƛƲԼƬ")
     input3: Message = await bot.listen(editable.chat.id)
     raw_text3 = input3.text
     await input3.delete(True)
@@ -285,7 +285,7 @@ async def love_command(bot: Client, m: Message):
 ╭─《 🚀 DAWNLOAD INFO 》
 ├ <b>Vid_id:</b> <code>{str(count).zfill(3)}</code>
 ├ <b>Title:</b>  <code>{name1}</code>
-├ <b>Batch:</b> <code>{batch_name}</code>
+├ <b>Batch:</b> <code>{b_name}</code>
 ├ <b>Quality:</b> <code>{raw_text2}</code>
 ╰ <b>Download by:</b> <code>{MR}</code>
 
@@ -297,7 +297,7 @@ async def love_command(bot: Client, m: Message):
 ╭─《 🚀 DAWNLOAD INFO 》
 ├ <b>Pdf_Id:</b> <code>{str(count).zfill(3)}</code>
 ├ <b>Title:</b>  <code>{name1}</code>
-├ <b>Batch:</b> <code>{raw_text0}</code>
+├ <b>Batch:</b> <code>{b_name}</code>
 ├ <b>Quality:</b> <code>{raw_text2}</code>
 ╰ <b>Download by:</b> <code>{MR}</code>
 
