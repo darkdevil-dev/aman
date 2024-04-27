@@ -24,3 +24,6 @@ speedtest-cli
 python-telegram-bot==13.7
 ffmpeg
 wget
+ffprobe
+asyncio
+humanize
