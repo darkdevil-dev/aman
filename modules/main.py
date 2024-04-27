@@ -218,7 +218,7 @@ async def love_command(bot: Client, m: Message):
     else:
         MR = raw_text3
    
-    await editable.edit("ƝƠƜ ƧƐƝƊ ƬӇƐ ƬӇƲMƁ ƲƦԼ\nEg » https://graph.org/file/54ded40501145003e48bf.jpg \n\nƠƦ ƖƑ ƊƠƝ'Ƭ ƜƛƝƬ ƬӇƲMƁƝƛƖԼ ƧƐƝƊ = no")
+    await editable.edit("ƝƠƜ ƧƐƝƊ ƬӇƐ ƬӇƲMƁ ƲƦԼ\nEg » https://telegra.ph/file/c37f3eaf3e59e7e64fde7.png \n\nƠƦ ƖƑ ƊƠƝ'Ƭ ƜƛƝƬ ƬӇƲMƁƝƛƖԼ ƧƐƝƊ = no")
     input6 = message = await bot.listen(editable.chat.id)
     raw_text6 = input6.text
     await input6.delete(True)
@@ -273,17 +273,40 @@ async def love_command(bot: Client, m: Message):
                 cc = f'''
 ╭─《 🚀 DAWNLOAD INFO 》
 ├ <b>Vid_id:</b> <code>{str(count).zfill(3)}</code>
-├ <b>Title:</b>  <code>{name1}.mp4</code>
+├ <b>Title:</b>  <code>{name1}</code>
 ├ <b>Batch:</b> <code>{raw_text0}</code>
+├ <b>Quality:</b> <code>{raw_text2}</code>
 ╰ <b>Download by:</b> <code>{MR}</code>
 '''
+# Create an inline keyboard button
+    keyboard = [
+        [
+            InlineKeyboardButton("❣️ ᴊᴏɪɴ ꜰᴏʀ ᴍᴏʀᴇ", url="https://t.me/LegendUnion"),
+    reply_markup = InlineKeyboardMarkup(keyboard)
+        ]
+    ]        
+# Send the download info with the inline keyboard button
+    await bot.send_message(m.chat.id, cc, reply_markup=reply_markup)
+                
                 cc1 = f'''
 ╭─《 🚀 DAWNLOAD INFO 》
 ├ <b>Vid_id:</b> <code>{str(count).zfill(3)}</code>
-├ <b>Title:</b>  <code>{name1}.pdf</code>
+├ <b>Title:</b>  <code>{name1}</code>
 ├ <b>Batch:</b> <code>{raw_text0}</code>
+├ <b>Quality:</b> <code>{raw_text2}</code>
 ╰ <b>Download by:</b> <code>{MR}</code>
 '''
+# Create an inline keyboard button
+    keyboard = [
+        [
+            InlineKeyboardButton("❣️ ᴊᴏɪɴ ꜰᴏʀ ᴍᴏʀᴇ", url="https://t.me/LegendUnion"),
+    reply_markup = InlineKeyboardMarkup(keyboard)
+        ]
+    ]                
+
+# Send the download info with the inline keyboard button
+    await bot.send_message(m.chat.id, cc1, reply_markup=reply_markup)
+                
                 if "drive" in url:
                     try:
                         ka = await helper.download(url, name)
