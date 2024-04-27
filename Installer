@@ -1,5 +1,4 @@
 async-lru==2.0.2
-requests
 certifi==2023.5.7
 charset-normalizer==3.1.0
 idna==3.4
@@ -24,5 +23,3 @@ umongo==3.1.0
 speedtest-cli
 python-telegram-bot==13.7
 ffmpeg
-ffprobe
-asyncio
