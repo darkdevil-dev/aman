@@ -116,13 +116,13 @@ def authorize_user(user_id, duration, time_unit):
     authorized_users_collection.insert_one({'user_id': user_id, 'expiration_time': expiration_time})
 
 @bot.on_message(filters.command("a"))
-async def authorize_command(bot: Client, message: Message):
-    if message.from_user.id == YOUR_BOT_OWNER_ID:  # Replace with your bot's owner ID
+async def authorize_command(bot: Client, m: Message):
+    if m.from_user.id == 5631563685:  # Replace with your bot's owner ID
         try:
             # Parse user ID, duration, and time unit from command
-            command_parts = message.text.split(' ', 3)
+            command_parts = m.text.split(' ', 3)
             if len(command_parts) < 4:
-                await message.reply("Invalid command format. Usage: /authorize <user_id> <duration> <time_unit>")
+                await m.reply("Invalid command format. Usage: /a <user_id> <duration> <time_unit>")
                 return
 
             user_id = int(command_parts[1])
@@ -130,11 +130,11 @@ async def authorize_command(bot: Client, message: Message):
             time_unit = command_parts[3].lower()
 
             authorize_user(user_id, duration, time_unit)
-            await message.reply(f"User {user_id} has been authorized for {duration} {time_unit}.")
+            await m.reply(f"User {user_id} has been authorized for {duration} {time_unit}.")
         except Exception as e:
-            await message.reply(f"Error: {str(e)}")
+            await m.reply(f"Error: {str(e)}")
     else:
-        await message.reply("You are not authorized to perform this action.")
+        await m.reply("You are not authorized to perform this action.")
         
         
 # Handler to unauthorize a user
