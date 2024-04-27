@@ -173,12 +173,18 @@ async def love_command(bot: Client, m: Message):
             return
 
 
-    await editable.edit(f"ƬƠƬƛԼ ԼƖƝҠƧ ƑƠƲƝƊ ƛƦЄ🔗🔗 **{len(links)}**\n\nƧЄƝƊ ƑƦƠM ƜӇЄƦЄ ᎩƠƲ ƜƛƝƬ ƬƠ ƊƛƜƝԼƠƛƊ ƖƝƖƬƖƛԼ ƖƧ **1**")
+    await editable.edit(f"ƬƠƬƛԼ ԼƖƝҠƧ ƑƠƲƝƊ ƛƦƩ🔗🔗 **{len(links)}**\n\nƧЄƝƊ ƑƦƠM ƜӇЄƦЄ ᎩƠƲ ƜƛƝƬ ƬƠ ƊƛƜƝԼƠƛƊ ƖƝƖƬƖƛԼ ƖƧ **1**")
+    
+    # Check if the number of links exceeds the limit
+    if len(links) > 10:
+        await m.reply_text("Download limit exceeded. Please upload again with fewer links.")
+        return
+
     input0 = await bot.listen(editable.chat.id)
     raw_text = input0.text
     await input0.delete(True)
 
-    await editable.edit("ƝƠƜ ƤԼЄƛƧЄ ƧЄƝƊ MЄ ᎩƠƲƦ ƁƛƬƇӇ ƝƛMЄ")
+    await editable.edit("ƝƠƜ ƤԼЄƛƧЄ ƧЄƝƊ MЄ ᎩƠƲƦ ƁƛƬƇ ƝƛMЄ")
     input1 = await bot.listen(editable.chat.id)
     raw_text0 = input1.text
     await input1.delete(True)
@@ -300,44 +306,38 @@ async def love_command(bot: Client, m: Message):
                     Show = f"**⥥ 🄳🄾🅆🄽🄻🄾🄰🄳🄸🄽🄶⬇️⬇️... »**\n\n**📝Name »** `{name}\n❄Quality » {raw_text2}`\n\n**🔗URL »** `{url}`"
                     prog = await m.reply_text(Show)
                     res_file = await helper.download_video(url, cmd, name)
-                    filename = res_file
-                    await prog.delete(True)
-                    await helper.send_vid(bot, m, cc, filename, thumb, name, prog)
-                    count += 1
-                    time.sleep(1)
-
+                    filename = res_file.split("/")[-1]
+                    new_file = f"{path}/{filename}"
+                    os.rename(res_file, new_file)
+                    if thumb != "no":
+                        final_thumb = f"{path}/thumb_{count}.jpg"
+                        subprocess.run(["ffmpeg", "-i", new_file, "-ss", "00:00:01.000", "-vframes", "1", final_thumb])
+                        sent = await bot.send_video(chat_id=m.chat.id, video=new_file, duration=10, thumb=final_thumb, caption=cc)
+                        count += 1
+                        os.remove(new_file)
+                        os.remove(final_thumb)
+                    else:
+                        sent = await bot.send_video(chat_id=m.chat.id, video=new_file, duration=10, caption=cc)
+                        count += 1
+                        os.remove(new_file)
+                    await prog.delete()
             except Exception as e:
-                await m.reply_text(
-                    f"**downloading Interupted **\n{str(e)}\n**Name** » {name}\n**Link** » `{url}`"
-                )
-                continue
+                await bot.send_message(chat_id=m.chat.id, text=f"**ℹ️ INFO**\n\n**```{str(e)}```**")
 
-    except Exception as e:
-        await m.reply_text(e)
-    await m.reply_text("**ᗫOᑎᙓ ᙖOSS😎**")
+    except FloodWait as e:
+        print(str(e))
+        await bot.send_message(chat_id=m.chat.id, text=str(e))
+        time.sleep(e.x)
 
+    # Track user interaction with the /love command
+    user_id = m.from_user.id
+    chat_id = m.chat.id
+    interaction_data = {
+        "user_id": user_id,
+        "chat_id": chat_id,
+        "timestamp": time.time(),
+        "command": "/love"
+    }
+    interactions_collection.insert_one(interaction_data)
 
-
-@bot.on_message(filters.command("help"))
-async def restart_handler(_, m):
-    await m.reply_text("**💖 Hɘɭp Mɘnu :** \n\n/help ➤ Shows this message.\n\n/start ➤ Checking Bot Active or Not.\n\n/upgrade ➤ For Check Membership Price.\n\n/stop ➤ For Restarting The Bot.", True)
-   
-@bot.on_message(filters.command("upgrade"))
-async def restart_handler(_, m):
-    keyboard = [
-        [
-            InlineKeyboardButton("Admin", url="https://t.me/LegendRobot"),
-            InlineKeyboardButton("Close", callback_data="close_upgrade")
-        ]
-    ]
-    reply_markup = InlineKeyboardMarkup(keyboard)
-    reply_markup = InlineKeyboardMarkup(keyboard)
-    await m.reply_text("➻ 𝗙𝗿𝗲𝗲 𝗣𝗹𝗮𝗻 𝗨𝘀𝗲𝗿\n    ➥ Only One Day Demo\n    ➥ Price 0\n\n➻ 𝗩𝗜𝗣\n    ➥ Unlimited Dawnload\n    ➥ Price Rs 500  🇮🇳/🌎 30 days Validity\n\n\nꜰᴏʀ ᴍᴇᴍʙᴇʀꜱʜɪᴘ ᴄᴏɴᴛᴀᴄᴛ ᴛᴏ ᴀᴅᴍɪɴ.",
-        reply_markup=reply_markup
-    )
-
-@bot.on_callback_query(filters.regex("^close_upgrade$"))
-async def close_upgrade(_, callback_query):
-    await callback_query.message.delete()   
-         
 bot.run()
