@@ -192,9 +192,9 @@ async def love_command(bot: Client, m: Message):
     await input1.delete(True)
     await input1.delete(True)
     if raw_text0 == 'batch':
-        b_name = file_name
+        batch_name = file_name
     else:
-        b_name = raw_text0
+        batch_name = raw_text0
 
     await editable.edit("ЄƝƬЄƦ ƦЄƧƠԼƲƬƖƠƝ 🚀\n➥ 144,240,360,480,720,1080 \n\nƤԼЄƛƧЄ ƇӇƠƠƧЄ ƢƲƛԼƖƬᎩ")
     input2: Message = await bot.listen(editable.chat.id)
@@ -220,11 +220,11 @@ async def love_command(bot: Client, m: Message):
     
     
 
-    await editable.edit("ЄƝƬЄƦ ᎩƠƲƦ ƝƛMЄ ƠƦ ƧЄƝƊ __name__ ƑƠƦ ƲƧЄ ƊЄƑƛƲԼƬ")
+    await editable.edit("ЄƝƬЄƦ ᎩƠƲƦ ƝƛMЄ ƠƦ ƧЄƝƊ __n__ ƑƠƦ ƲƧЄ ƊЄƑƛƲԼƬ")
     input3: Message = await bot.listen(editable.chat.id)
     raw_text3 = input3.text
     await input3.delete(True)
-    if raw_text3 == 'name':
+    if raw_text3 == 'n':
         MR = credit
     else:
         MR = raw_text3
