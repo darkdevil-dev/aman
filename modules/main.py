@@ -114,7 +114,7 @@ async def authorize_user(bot: Client, m: Message):
         except ValueError:
             await m.reply("Invalid user ID provided.", quote=True)
     else:
-        await m.reply("You are not authorized to perform this action.", quote=True)
+        await m.reply("You are not my owner to perform this action.", quote=True)
 
 
 # Handler to unauthorize a user
@@ -134,7 +134,7 @@ async def unauthorize_user(bot: Client, m: Message):
         except ValueError:
             await m.reply("Invalid user ID provided.", quote=True)
     else:
-        await m.reply("You are not authorized to perform this action.", quote=True)
+        await m.reply("You are not my owner to perform this action.", quote=True)
         
 # Helper function to track unauthorized users
 def track_unauthorized_user(user_id):
@@ -142,7 +142,7 @@ def track_unauthorized_user(user_id):
     if not unauthorized_users_collection.find_one({'user_id': user_id}):
         unauthorized_users_collection.insert_one({'user_id': user_id, 'timestamp': time.time()})
 
-@bot.on_message(filters.command("love"))
+@bot.on_message(filters.command("devil"))
 async def love_command(bot: Client, m: Message):
     user_id = m.from_user.id
     # Check if user is authorized
@@ -277,16 +277,10 @@ async def love_command(bot: Client, m: Message):
 ├ <b>Batch:</b> <code>{raw_text0}</code>
 ├ <b>Quality:</b> <code>{raw_text2}</code>
 ╰ <b>Download by:</b> <code>{MR}</code>
+
+━━━━━━━✦✗✦━━━━━━━
+**ᒍOIᑎ ➭ [ԼЄƓЄƝƊ ƲƝƖƠƝ](https://t.me/LegendUnion)**
 '''
-# Create an inline keyboard button
-    keyboard = [
-        [
-            InlineKeyboardButton("❣️ ᴊᴏɪɴ ꜰᴏʀ ᴍᴏʀᴇ", url="https://t.me/LegendUnion"),
-    reply_markup = InlineKeyboardMarkup(keyboard)
-        ]
-    ]        
-# Send the download info with the inline keyboard button
-    await bot.send_message(m.chat.id, cc, reply_markup=reply_markup)
                 
                 cc1 = f'''
 ╭─《 🚀 DAWNLOAD INFO 》
@@ -295,17 +289,10 @@ async def love_command(bot: Client, m: Message):
 ├ <b>Batch:</b> <code>{raw_text0}</code>
 ├ <b>Quality:</b> <code>{raw_text2}</code>
 ╰ <b>Download by:</b> <code>{MR}</code>
-'''
-# Create an inline keyboard button
-    keyboard = [
-        [
-            InlineKeyboardButton("❣️ ᴊᴏɪɴ ꜰᴏʀ ᴍᴏʀᴇ", url="https://t.me/LegendUnion"),
-    reply_markup = InlineKeyboardMarkup(keyboard)
-        ]
-    ]                
 
-# Send the download info with the inline keyboard button
-    await bot.send_message(m.chat.id, cc1, reply_markup=reply_markup)
+━━━━━━━✦✗✦━━━━━━━
+**ᒍOIᑎ ➭ [ԼЄƓЄƝƊ ƲƝƖƠƝ](https://t.me/LegendUnion)**
+'''
                 
                 if "drive" in url:
                     try:
@@ -367,7 +354,7 @@ async def restart_handler(_, m):
     ]
     reply_markup = InlineKeyboardMarkup(keyboard)
     reply_markup = InlineKeyboardMarkup(keyboard)
-    await m.reply_text("➻ 𝗙𝗿𝗲𝗲 𝗣𝗹𝗮𝗻 𝗨𝘀𝗲𝗿\n    ➥ Only One Day Demo\n    ➥ Price 0\n\n➻ 𝗩𝗜𝗣\n    ➥ Unlimited Dawnload\n    ➥ Price Rs 500  🇮🇳/🌎 30 days Validity\n\n\nꜰᴏʀ ᴍᴇᴍʙᴇʀꜱʜɪᴘ ᴄᴏɴᴛᴀᴄᴛ ᴛᴏ ᴀᴅᴍɪɴ.",
+    await m.reply_text("➻ 𝗙𝗿𝗲𝗲 𝗣𝗹𝗮𝗻 𝗨𝘀𝗲𝗿\n    ➥ Only One hour Demo\n    ➥ Price 0\n\n➻ 𝗩𝗜𝗣\n    ➥ Unlimited Dawnload\n    ➥ Price Rs 500  🇮🇳/🌎 30 days Validity\n\n\nꜰᴏʀ ᴍᴇᴍʙᴇʀꜱʜɪᴘ ᴄᴏɴᴛᴀᴄᴛ ᴛᴏ ᴀᴅᴍɪɴ.",
         reply_markup=reply_markup
     )
 
