@@ -5,8 +5,7 @@ import asyncio
 import os
 import requests
 import time
-from p_bar import progress_bar
-from config import LOG
+from utils import progress_bar
 import aiohttp
 import tgcrypto
 import aiofiles
