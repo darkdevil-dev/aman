@@ -96,47 +96,27 @@ async def restart_handler(_, m):
     os.execl(sys.executable, sys.executable, *sys.argv)
 
 # Handler to authorize a user
-def authorize_user(user_id, duration, time_unit):
-    if time_unit not in ['minutes', 'hours', 'days', 'months', 'years']:
-        raise ValueError("Invalid time unit. Please use 'minutes', 'hours', 'days', 'months', or 'years'.")
-
-    if time_unit == 'minutes':
-        expiration_time = time.time() + (duration * 60)
-    elif time_unit == 'hours':
-        expiration_time = time.time() + (duration * 60 * 60)
-    elif time_unit == 'days':
-        expiration_time = time.time() + (duration * 24 * 60 * 60)
-    elif time_unit == 'months':
-        # Approximate months as 30 days for simplicity (not accurate for all cases)
-        expiration_time = time.time() + (duration * 30 * 24 * 60 * 60)
-    elif time_unit == 'years':
-        # Approximate years as 365 days for simplicity (not accurate for all cases)
-        expiration_time = time.time() + (duration * 365 * 24 * 60 * 60)
-
-    authorized_users_collection.insert_one({'user_id': user_id, 'expiration_time': expiration_time})
-
 @bot.on_message(filters.command("a"))
-async def authorize_command(bot: Client, m: Message):
+async def authorize_user(bot: Client, m: Message):
     if m.from_user.id == 5631563685:  # Replace with your bot's owner ID
         try:
-            # Parse user ID, duration, and time unit from command
-            command_parts = m.text.split(' ', 3)
-            if len(command_parts) < 4:
-                await m.reply("Invalid command format. Usage: /a <user_id> <duration> <time_unit>")
-                return
-
-            user_id = int(command_parts[1])
-            duration = int(command_parts[2])
-            time_unit = command_parts[3].lower()
-
-            authorize_user(user_id, duration, time_unit)
-            await m.reply(f"User {user_id} has been authorized for {duration} {time_unit}.")
-        except Exception as e:
-            await m.reply(f"Error: {str(e)}")
+            user_to_authorize = int(m.text.split(' ', 1)[1])
+            # Check if user ID already exists
+            existing_user = authorized_users_collection.find_one({'user_id': user_to_authorize})
+            if existing_user:
+                await m.reply(f"User {user_to_authorize} is already authorized.", quote=True)
+            else:
+                # Add user to the authorized collection
+                authorized_users_collection.insert_one({'user_id': user_to_authorize})
+                await m.reply(f"User {user_to_authorize} has been authorized successfully!", quote=True)
+        except IndexError:
+            await m.reply("Please provide the user's ID to authorize.", quote=True)
+        except ValueError:
+            await m.reply("Invalid user ID provided.", quote=True)
     else:
-        await m.reply("You are not authorized to perform this action.")
-        
-        
+        await m.reply("You are not authorized to perform this action.", quote=True)
+
+
 # Handler to unauthorize a user
 @bot.on_message(filters.command("ua"))
 async def unauthorize_user(bot: Client, m: Message):
@@ -257,7 +237,7 @@ async def love_command(bot: Client, m: Message):
         count = int(raw_text)
 
     try:
-        for i in range(count - 1, len(links)):
+        for i in range(count - 1, 10):
 
             V = links[i][1].replace("file/d/","uc?export=download&id=").replace("www.youtube-nocookie.com/embed", "youtu.be").replace("?modestbranding=1", "").replace("/view?usp=sharing","") # .replace("mpd","m3u8")
             url = "https://" + V
@@ -273,7 +253,7 @@ async def love_command(bot: Client, m: Message):
 
             elif '/master.mpd' in url:
              id =  url.split("/")[-2]
-             url =  "https://pwjarviis.onrender.com?v=" + id + "&quality="+raw_text2
+             url =  "https://psitoffers.store/testkey.php?vid=" + id + "&quality="+raw_text2
 
             name1 = links[i][0].replace("\t", "").replace(":", "").replace("/", "").replace("+", "").replace("#", "").replace("|", "").replace("@", "").replace("*", "").replace(".", "").replace("https", "").replace("http", "").strip()
             name = f'{str(count).zfill(3)}) {name1[:60]}'
