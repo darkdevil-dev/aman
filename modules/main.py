@@ -50,7 +50,7 @@ async def account_login(bot: Client, m: Message):
         ]
     ]
     reply_markup = InlineKeyboardMarkup(keyboard)
-    caption = "**Hey [{m.from_user.first_name}](tg://user?id={m.from_user.id}) 👋!**\n\n➨ 𝗜 𝗮𝗺 𝗮 𝗧𝗫𝗧 𝗗𝗮𝘄𝗻𝗹𝗼𝗮𝗱𝗲𝗿 𝗕𝗼𝘁 𝗠𝗮𝗱𝗲 𝗪𝗶𝘁𝗵 ❤️ \n\n➨𝗨𝘀𝗲 /help 𝗸𝗻𝗼𝘄 𝗮𝗯𝗼𝘂𝘁 𝗺𝗲.\n➨𝗨𝘀𝗲 /upgrade 𝗙𝗼𝗿 𝗖𝗵𝗲𝗰𝗸 𝗠𝗲𝗺𝗯𝗲𝗿𝘀𝗵𝗶𝗽 𝗣𝗿𝗶𝗰𝗲 \n\n➨ 𝗠𝗼𝗱𝗶𝗳𝗶𝗲𝗱 𝗕𝘆 : @LegendRobot"
+    caption = "**Hey Dear 👋!**\n\n➨ 𝗜 𝗮𝗺 𝗮 𝗧𝗫𝗧 𝗗𝗮𝘄𝗻𝗹𝗼𝗮𝗱𝗲𝗿 𝗕𝗼𝘁 𝗠𝗮𝗱𝗲 𝗪𝗶𝘁𝗵 ❤️ \n\n➨𝗨𝘀𝗲 /help 𝗸𝗻𝗼𝘄 𝗮𝗯𝗼𝘂𝘁 𝗺𝗲.\n➨𝗨𝘀𝗲 /upgrade 𝗙𝗼𝗿 𝗖𝗵𝗲𝗰𝗸 𝗠𝗲𝗺𝗯𝗲𝗿𝘀𝗵𝗶𝗽 𝗣𝗿𝗶𝗰𝗲 \n\n➨ 𝗠𝗼𝗱𝗶𝗳𝗶𝗲𝗱 𝗕𝘆 : @LegendRobot"
     
     # Assuming 'm' is defined somewhere within the function
     await m.reply_photo(
@@ -186,7 +186,7 @@ async def love_command(bot: Client, m: Message):
     raw_text = input0.text
     await input0.delete(True)
 
-    await editable.edit("ЄƝƬЄƦ ƁƛƬƇӇ ƝƛMЄ ƠƦ ƧЄƝƊ __batch__ ƑƠƦ ƓƦƛƁƖƝƓ ƑƦƠM ƬҲƬ ƑƖԼЄƝƛMЄ")
+    await editable.edit("ЄƝƬЄƦ ƁƛƬƇӇ ƝƛMЄ ƠƦ ƧЄƝƊ "__batch__" ƑƠƦ ƓƦƛƁƖƝƓ ƑƦƠM ƬҲƬ ƑƖԼЄƝƛMЄ")
     input1 = await bot.listen(editable.chat.id)
     raw_text0 = input1.text
     await input1.delete(True)
@@ -220,7 +220,7 @@ async def love_command(bot: Client, m: Message):
     
     
 
-    await editable.edit("ЄƝƬЄƦ ᎩƠƲƦ ƝƛMЄ ƠƦ ƧЄƝƊ __n__ ƑƠƦ ƲƧЄ ƊЄƑƛƲԼƬ")
+    await editable.edit("ЄƝƬЄƦ ᎩƠƲƦ ƝƛMЄ ƠƦ ƧЄƝƊ "__n__" ƑƠƦ ƲƧЄ ƊЄƑƛƲԼƬ")
     input3: Message = await bot.listen(editable.chat.id)
     raw_text3 = input3.text
     await input3.delete(True)
@@ -285,7 +285,7 @@ async def love_command(bot: Client, m: Message):
 ╭─《 🚀 DAWNLOAD INFO 》
 ├ <b>Vid_id:</b> <code>{str(count).zfill(3)}</code>
 ├ <b>Title:</b>  <code>{name1}</code>
-├ <b>Batch:</b> <code>{raw_text0}</code>
+├ <b>Batch:</b> <code>{batch_name}</code>
 ├ <b>Quality:</b> <code>{raw_text2}</code>
 ╰ <b>Download by:</b> <code>{MR}</code>
 
