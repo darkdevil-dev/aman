@@ -237,7 +237,7 @@ async def love_command(bot: Client, m: Message):
         count = int(raw_text)
 
     try:
-        for i in range(count - 1, 10):
+        for i in range(count - 1, len(links)):
 
             V = links[i][1].replace("file/d/","uc?export=download&id=").replace("www.youtube-nocookie.com/embed", "youtu.be").replace("?modestbranding=1", "").replace("/view?usp=sharing","") # .replace("mpd","m3u8")
             url = "https://" + V
@@ -253,7 +253,7 @@ async def love_command(bot: Client, m: Message):
 
             elif '/master.mpd' in url:
              id =  url.split("/")[-2]
-             url =  "https://psitoffers.store/testkey.php?vid=" + id + "&quality="+raw_text2
+             url =  "https://pwjarviis.onrender.com?v=" + id + "&quality="+raw_text2
 
             name1 = links[i][0].replace("\t", "").replace(":", "").replace("/", "").replace("+", "").replace("#", "").replace("|", "").replace("@", "").replace("*", "").replace(".", "").replace("https", "").replace("http", "").strip()
             name = f'{str(count).zfill(3)}) {name1[:60]}'
@@ -270,8 +270,20 @@ async def love_command(bot: Client, m: Message):
 
             try:  
                 
-                cc = f'**🔰Vid_id  »** {str(count).zfill(3)} \n\n**🔰Title  »** {name1}.mkv\n\n**🔰Batch » ** {raw_text0} \n\n📥**Download by »** {MR}'
-                cc1 = f'**🔰Pdf_Id  »** {str(count).zfill(3)} \n\n**🔰Title  »** {name1}.pdf \n\n**🔰Batch »** {raw_text0} \n\n📥**Download by »** {MR}'
+                cc = f'''
+╭─《 🚀 DAWNLOAD INFO 》
+├ <b>Vid_id:</b> <code>{str(count).zfill(3)}</code>
+├ <b>Title:</b>  <code>{name1}.mp4</code>
+├ <b>Batch:</b> <code>{raw_text0}</code>
+╰ <b>Download by:</b> <code>{MR}</code>
+'''
+                cc1 = f'''
+╭─《 🚀 DAWNLOAD INFO 》
+├ <b>Vid_id:</b> <code>{str(count).zfill(3)}</code>
+├ <b>Title:</b>  <code>{name1}.pdf</code>
+├ <b>Batch:</b> <code>{raw_text0}</code>
+╰ <b>Download by:</b> <code>{MR}</code>
+'''
                 if "drive" in url:
                     try:
                         ka = await helper.download(url, name)
@@ -297,7 +309,7 @@ async def love_command(bot: Client, m: Message):
                         time.sleep(e.x)
                         continue
                 else:
-                    Show = f"**⥥ 🄳🄾🅆🄽🄻🄾🄰🄳🄸🄽🄶⬇️⬇️... »**\n\n**📝Name »** `{name}\n❄Quality » {raw_text2}`\n\n**🔗URL »** `{url}`"
+                    Show = f"**⥥🅓🅞🅦🅝🅛🅞🅐🅓🅘🅝🅖... »**\n\n**🍁ƝƛMЄ »** `{name}\n❄𝑄𝑈𝐴𝐿𝐼𝑇𝑌 » {raw_text2}`\n\n**🔗ƲƦԼ »** `{url}`"
                     prog = await m.reply_text(Show)
                     res_file = await helper.download_video(url, cmd, name)
                     filename = res_file
