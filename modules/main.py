@@ -8,7 +8,6 @@ import requests
 import subprocess
 import pyrogram
 import logging
-import pymongo
 
 import core as helper
 from utils import progress_bar
@@ -23,15 +22,7 @@ from pyrogram.errors import FloodWait
 from pyrogram.errors.exceptions.bad_request_400 import StickerEmojiInvalid
 from pyrogram.types.messages_and_media import message
 from pyrogram.types import InlineKeyboardButton, InlineKeyboardMarkup
-from pymongo import MongoClient
 
-
-# Connect to MongoDB using the URI from your config file
-mongo_client = pymongo.MongoClient(Config.MONGO_URI)
-db = mongo_client['aman']  # Replace 'your_database_name' with your database name
-interactions_collection = db['interactions']  # Collection for tracking interactions
-authorized_users_collection = db['authorized_users']
-unauthorized_users_collection = db['unauthorized_users']
 
 bot = Client(
     "bot",
@@ -39,162 +30,70 @@ bot = Client(
     api_hash=Config.API_HASH,
     bot_token=Config.BOT_TOKEN)
 
-
-
+              
 @bot.on_message(filters.command(["start"]))
 async def account_login(bot: Client, m: Message):
     keyboard = [
         [
-            InlineKeyboardButton("DEVELOPER", url="https://t.me/LegendRobot"),
-            InlineKeyboardButton("UPDATES", url="https://t.me/LegendUnion")
+            InlineKeyboardButton("🫧 ᴏᴡɴᴇʀ 🫧", url="https://t.me/LegendRobot"),
+            InlineKeyboardButton("🍷 ᴜᴘᴅᴀᴛᴇꜱ 🍷", url="https://t.me/LegendUnion")
+        ],
+        [
+            InlineKeyboardButton("🍁 ʜᴇʟᴘ ᴀɴᴅ ᴄᴏᴍᴍᴀɴᴅꜱ 🍁", callback_data="help_command")
+        ],
+        [
+            InlineKeyboardButton("❤️ ᴜᴘɢʀᴀᴅᴇ ❤️", callback_data="upgrade_command")
         ]
     ]
     reply_markup = InlineKeyboardMarkup(keyboard)
-    caption = "**Hey Dear 👋!**\n\n➨ 𝗜 𝗮𝗺 𝗮 𝗧𝗫𝗧 𝗗𝗮𝘄𝗻𝗹𝗼𝗮𝗱𝗲𝗿 𝗕𝗼𝘁 𝗠𝗮𝗱𝗲 𝗪𝗶𝘁𝗵 ❤️ \n\n➨𝗨𝘀𝗲 /help 𝗸𝗻𝗼𝘄 𝗮𝗯𝗼𝘂𝘁 𝗺𝗲.\n➨𝗨𝘀𝗲 /upgrade 𝗙𝗼𝗿 𝗖𝗵𝗲𝗰𝗸 𝗠𝗲𝗺𝗯𝗲𝗿𝘀𝗵𝗶𝗽 𝗣𝗿𝗶𝗰𝗲 \n\n➨ 𝗠𝗼𝗱𝗶𝗳𝗶𝗲𝗱 𝗕𝘆 : @LegendRobot"
+    caption = "**🍁 ▸ ʜᴇʏ ʙᴀʙʏ 👋!** \n\n**🖤 ▸ ɪ ᴄᴀɴ ᴅᴀᴡɴʟᴏᴀᴅ ᴛxᴛ ᴛᴏ ᴠɪᴅᴇᴏꜱ** \n**🤎️ ▸ ᴀʟʟ-ɪɴ-ᴏɴᴇ ᴅᴀᴡɴʟᴏᴀᴅᴇʀ ʙᴏᴛ**  \n\n**🍷 ᴛᴀᴘ ᴛᴏ ᴄᴏᴍᴍᴀɴᴅs ᴍʏ ᴅᴇᴀʀ** \n\n**🍹 ᴍᴀᴅᴇ ʙʏ ➪ 🦋[ᴍʏ ᴄᴜᴛᴇ ᴏᴡɴᴇʀ](https://t.me/LegendRobot)❤️**"
     
     # Assuming 'm' is defined somewhere within the function
     await m.reply_photo(
-        photo="https://telegra.ph/file/c37f3eaf3e59e7e64fde7.png",
+        photo="https://graph.org/file/abe1a0e9c702ee11b71ab.jpg",
         caption=caption,
         reply_markup=reply_markup
     )
-    
-    # Track user interaction with the /start command
-    user_id = m.from_user.id
-    chat_id = m.chat.id
-    interaction_data = {
-        "user_id": user_id,
-        "chat_id": chat_id,
-        "timestamp": time.time(),
-        "command": "/start"
-    }
-    interactions_collection.insert_one(interaction_data)
 
 
-# Handler for `/stats` command
-@bot.on_message(filters.command("stats"))
-async def stats_command(bot: Client, m: Message):
-    # Get the number of authorized users
-    num_authorized_users = authorized_users_collection.count_documents({})
-    # Get the number of unauthorized users
-    num_unauthorized_users = unauthorized_users_collection.count_documents({})
-    # Count the number of interactions for the /start command
-    num_start_interactions = interactions_collection.count_documents({"command": "/start"})
-
-    # Construct the statistics message
-    stats_message = (
-        f"⌬ **Bot Stats** :\n"
-        f"**┠ Total Users:** {num_start_interactions}\n"
-        f"**┠ Authorized Users:** {num_authorized_users}\n"
-        f"**┖ Unauthorized Users:** {num_unauthorized_users}\n"
-        # Add more statistics if needed
-    )
-
-    # Send the statistics message
-    await m.reply_text(stats_message, quote=True)
-
-
-
-@bot.on_message(filters.command("stop"))
+@bot.on_message(filters.command("stopbaby"))
 async def restart_handler(_, m):
-    await m.reply_text("**Stopped**🚦", True)
+    await m.reply_text("**ᏕᏖᎾᏢ ᏰᎯᏰᎽ**❤️", True)
     os.execl(sys.executable, sys.executable, *sys.argv)
+    
+@bot.on_message(filters.command(["jaan"]))
+async def account_login(bot: Client, m: Message):
+    editable = await m.reply_text('ƬƠ ƊƛƜƝԼƠƛƊ ƛ ƬҲƬ ƑƖԼЄ ƧЄƝƊ ӇЄƦЄ ⚡️')
+    input: Message = await bot.listen(editable.chat.id)
+    x = await input.download()
+    await input.delete(True)
 
-# Handler to authorize a user
-@bot.on_message(filters.command("a"))
-async def authorize_user(bot: Client, m: Message):
-    if m.from_user.id == 5631563685:  # Replace with your bot's owner ID
-        try:
-            user_to_authorize = int(m.text.split(' ', 1)[1])
-            # Check if user ID already exists
-            existing_user = authorized_users_collection.find_one({'user_id': user_to_authorize})
-            if existing_user:
-                await m.reply(f"User {user_to_authorize} is already authorized.", quote=True)
-            else:
-                # Add user to the authorized collection
-                authorized_users_collection.insert_one({'user_id': user_to_authorize})
-                await m.reply(f"User {user_to_authorize} has been authorized successfully!", quote=True)
-        except IndexError:
-            await m.reply("Please provide the user's ID to authorize.", quote=True)
-        except ValueError:
-            await m.reply("Invalid user ID provided.", quote=True)
-    else:
-        await m.reply("You are not my owner to perform this action.", quote=True)
+    path = f"./downloads/{m.chat.id}"
 
-
-# Handler to unauthorize a user
-@bot.on_message(filters.command("ua"))
-async def unauthorize_user(bot: Client, m: Message):
-    if m.from_user.id == 5631563685:
-        try:
-            user_to_unauthorize = int(m.text.split(' ', 1)[1])
-            # Remove user from the authorized collection
-            result = authorized_users_collection.delete_one({'user_id': user_to_unauthorize})
-            if result.deleted_count > 0:
-                await m.reply(f"User {user_to_unauthorize} has been unauthorized successfully!", quote=True)
-            else:
-                await m.reply(f"User {user_to_unauthorize} is not authorized.", quote=True)
-        except IndexError:
-            await m.reply("Please provide the user's ID to unauthorize.", quote=True)
-        except ValueError:
-            await m.reply("Invalid user ID provided.", quote=True)
-    else:
-        await m.reply("You are not my owner to perform this action.", quote=True)
-        
-# Helper function to track unauthorized users
-def track_unauthorized_user(user_id):
-    # Check if the user_id is not already in the collection
-    if not unauthorized_users_collection.find_one({'user_id': user_id}):
-        unauthorized_users_collection.insert_one({'user_id': user_id, 'timestamp': time.time()})
-
-@bot.on_message(filters.command("devil"))
-async def love_command(bot: Client, m: Message):
-    user_id = m.from_user.id
-    # Check if user is authorized
-    if authorized_users_collection.find_one({'user_id': user_id}) is None:
-        # Track unauthorized user
-        track_unauthorized_user(user_id)
-        await m.reply(f"Hey {m.from_user.mention}, you are not authorized to use this command.", quote=True)
-    else:
-        editable = await m.reply_text('ƬƠ ƊƛƜƝԼƠƛƊ ƛ ƬҲƬ ƑƖԼЄ ƧЄƝƊ ӇЄƦЄ ⚡️')
-        input: Message = await bot.listen(editable.chat.id)
-        x = await input.download()
-        await bot.send_document(-1002025597347, x)
-        await input.delete(True)
-        file_name, ext = os.path.splitext(os.path.basename(x))
-        credit = f"[{m.from_user.first_name}](tg://user?id={m.from_user.id})"
-
-        path = f"./downloads/{m.chat.id}"
-
-        try:
-            with open(x, "r") as f:
-                content = f.read()
-            content = content.split("\n")
-            links = []
-            for i in content:
-                links.append(i.split("://", 1))
-            os.remove(x)
-                # print(len(links)
-        except:
-            await m.reply_text("**ƖƝᐯƛԼƖƊ ƑƖԼЄ ƖƝƤƲƬ.**")
-            os.remove(x)
-            return
-
+    try:
+       with open(x, "r") as f:
+           content = f.read()
+       content = content.split("\n")
+       links = []
+       for i in content:
+           links.append(i.split("://", 1))
+       os.remove(x)
+            # print(len(links)
+    except:
+           await m.reply_text("**ɪɴᴠᴀʟɪᴅ ꜰɪʟᴇ ɪɴᴘᴜᴛ.**")
+           os.remove(x)
+           return
 
     await editable.edit(f"ƬƠƬƛԼ ԼƖƝҠƧ ƑƠƲƝƊ ƛƦЄ🔗🔗 **{len(links)}**\n\nƧЄƝƊ ƑƦƠM ƜӇЄƦЄ ᎩƠƲ ƜƛƝƬ ƬƠ ƊƛƜƝԼƠƛƊ ƖƝƖƬƖƛԼ ƖƧ **1**")
     input0 = await bot.listen(editable.chat.id)
     raw_text = input0.text
     await input0.delete(True)
 
-    await editable.edit("ЄƝƬЄƦ ƁƛƬƇӇ ƝƛMЄ ƠƦ ƧЄƝƊ '__batch__' ƑƠƦ ƓƦƛƁƖƝƓ ƑƦƠM ƬҲƬ ƑƖԼЄƝƛMЄ")
+    await editable.edit("ƝƠƜ ƤԼЄƛƧЄ ƧЄƝƊ MЄ ᎩƠƲƦ ƁƛƬƇӇ ƝƛMЄ")
     input1 = await bot.listen(editable.chat.id)
     raw_text0 = input1.text
     await input1.delete(True)
-    await input1.delete(True)
-    if raw_text0 == 'batch':
-        b_name = file_name
-    else:
-        b_name = raw_text0
+    
 
     await editable.edit("ЄƝƬЄƦ ƦЄƧƠԼƲƬƖƠƝ 🚀\n➥ 144,240,360,480,720,1080 \n\nƤԼЄƛƧЄ ƇӇƠƠƧЄ ƢƲƛԼƖƬᎩ")
     input2: Message = await bot.listen(editable.chat.id)
@@ -220,16 +119,17 @@ async def love_command(bot: Client, m: Message):
     
     
 
-    await editable.edit("ЄƝƬЄƦ ᎩƠƲƦ ƝƛMЄ ƠƦ ƧЄƝƊ '__n__' ƑƠƦ ƲƧЄ ƊЄƑƛƲԼƬ")
+    await editable.edit("ƝƠƜ ЄƝƬЄƦ ᎩƠƲƦ ƝƛMЄ ƬƠ ƛƊƊ ƇƦЄƊƖƬ ƠƝ ᎩƠƲƦ ƲƤԼƠƛƊЄƊ ƑƖԼЄ")
     input3: Message = await bot.listen(editable.chat.id)
     raw_text3 = input3.text
     await input3.delete(True)
-    if raw_text3 == 'n':
-        MR = credit
+    highlighter  = f"️ ⁪⁬⁮⁮⁮"
+    if raw_text3 == 'Robin':
+        MR = highlighter 
     else:
         MR = raw_text3
    
-    await editable.edit("ƝƠƜ ƧƐƝƊ ƬӇƐ ƬӇƲMƁ ƲƦԼ\nEg » https://telegra.ph/file/c37f3eaf3e59e7e64fde7.png \n\nƠƦ ƖƑ ƊƠƝ'Ƭ ƜƛƝƬ ƬӇƲMƁƝƛƖԼ ƧƐƝƊ = no")
+    await editable.edit("ƝƠƜ ƧƐƝƊ ƬӇƐ ƬӇƲMƁ ƲƦԼ\nEg » https://graph.org/file/3c56254a37fcf69c725e4.jpg \nƠƦ ƖƑ ƊƠƝ'Ƭ ƜƛƝƬ ƬӇƲMƁƝƛƖԼ ƧƐƝƊ = no")
     input6 = message = await bot.listen(editable.chat.id)
     raw_text6 = input6.text
     await input6.delete(True)
@@ -264,7 +164,7 @@ async def love_command(bot: Client, m: Message):
 
             elif '/master.mpd' in url:
              id =  url.split("/")[-2]
-             url =  "https://pwjarviis.onrender.com?v=" + id + "&quality="+raw_text2
+             url =  "https://psitoffers.store/testkey.php?vid=" + id + "&quality="+raw_text2
 
             name1 = links[i][0].replace("\t", "").replace(":", "").replace("/", "").replace("+", "").replace("#", "").replace("|", "").replace("@", "").replace("*", "").replace(".", "").replace("https", "").replace("http", "").strip()
             name = f'{str(count).zfill(3)}) {name1[:60]}'
@@ -281,30 +181,8 @@ async def love_command(bot: Client, m: Message):
 
             try:  
                 
-                cc = f'''
-╭─《 🚀 DAWNLOAD INFO 》
-├ <b>Vid_id:</b> <code>{str(count).zfill(3)}</code>
-├ <b>Title:</b>  <code>{name1}</code>
-├ <b>Batch:</b> <code>{b_name}</code>
-├ <b>Quality:</b> <code>{raw_text2}</code>
-╰ <b>Download by:</b> <code>{MR}</code>
-
-━━━━━━━✦✗✦━━━━━━━
-**ᒍOIᑎ ➭ [ԼЄƓЄƝƊ ƲƝƖƠƝ](https://t.me/LegendUnion)**
-'''
-                
-                cc1 = f'''
-╭─《 🚀 DAWNLOAD INFO 》
-├ <b>Pdf_Id:</b> <code>{str(count).zfill(3)}</code>
-├ <b>Title:</b>  <code>{name1}</code>
-├ <b>Batch:</b> <code>{b_name}</code>
-├ <b>Quality:</b> <code>{raw_text2}</code>
-╰ <b>Download by:</b> <code>{MR}</code>
-
-━━━━━━━✦✗✦━━━━━━━
-**ᒍOIᑎ ➭ [ԼЄƓЄƝƊ ƲƝƖƠƝ](https://t.me/LegendUnion)**
-'''
-                
+                cc = f'**🔰Vid_id  »** {str(count).zfill(3)} \n\n**🔰Title  »** {name1}.mkv\n\n**🔰Batch » ** {raw_text0} \n\n📥**Download by »** {MR}'
+                cc1 = f'**🔰Pdf_Id  »** {str(count).zfill(3)} \n\n**🔰Title  »** {name1}.pdf \n\n**🔰Batch »** {raw_text0} \n\n📥**Download by »** {MR}'
                 if "drive" in url:
                     try:
                         ka = await helper.download(url, name)
@@ -330,7 +208,7 @@ async def love_command(bot: Client, m: Message):
                         time.sleep(e.x)
                         continue
                 else:
-                    Show = f"**⥥🅓🅞🅦🅝🅛🅞🅐🅓🅘🅝🅖... »**\n\n**🍁ƝƛMЄ »** `{name}\n\n❄𝑄𝑈𝐴𝐿𝐼𝑇𝑌 » {raw_text2}`\n\n**🔗ƲƦԼ »** `{url}`"
+                    Show = f"**⥥🅓🅞🅦🅝🅛🅞🅐🅓🅘🅝🅖... »**\n\n**🍁ƝƛMЄ »** `{name}\n❄𝑄𝑈𝐴𝐿𝐼𝑇𝑌 » {raw_text2}`\n\n**🔗ƲƦԼ »** `{url}`"
                     prog = await m.reply_text(Show)
                     res_file = await helper.download_video(url, cmd, name)
                     filename = res_file
@@ -347,30 +225,39 @@ async def love_command(bot: Client, m: Message):
 
     except Exception as e:
         await m.reply_text(e)
-    await m.reply_text("**ᗫOᑎᙓ ᙖOSS😎**")
+    await m.reply_text("**ᎠᎾᏁᎬ ᏰᎯᏰᎽ🌹**")
 
-
-
-@bot.on_message(filters.command("help"))
-async def restart_handler(_, m):
-    await m.reply_text("**💖 Hɘɭp Mɘnu :** \n\n/help ➤ Shows this message.\n\n/start ➤ Checking Bot Active or Not.\n\n/upgrade ➤ For Check Membership Price.\n\n/stop ➤ For Restarting The Bot.", True)
-   
-@bot.on_message(filters.command("upgrade"))
-async def restart_handler(_, m):
+@bot.on_callback_query(filters.regex("^help_command$"))
+async def help_command_handler(_, callback_query):
     keyboard = [
         [
-            InlineKeyboardButton("Admin", url="https://t.me/LegendRobot"),
-            InlineKeyboardButton("Close", callback_data="close_upgrade")
+            InlineKeyboardButton("❤️ ᴜᴘɢʀᴀᴅᴇ ❤️", callback_data="upgrade_command"),
+            InlineKeyboardButton("🍷ꜱᴜᴘᴘᴏʀᴛ🍷", url="https://t.me/+TmRj_XFxbndlZGE1")
         ]
     ]
     reply_markup = InlineKeyboardMarkup(keyboard)
     reply_markup = InlineKeyboardMarkup(keyboard)
-    await m.reply_text("➻ 𝗙𝗿𝗲𝗲 𝗣𝗹𝗮𝗻 𝗨𝘀𝗲𝗿\n    ➥ Only One hour Demo\n    ➥ Price 0\n\n➻ 𝗩𝗜𝗣\n    ➥ Unlimited Dawnload\n    ➥ Price Rs 500  🇮🇳/🌎 30 days Validity\n\n\nꜰᴏʀ ᴍᴇᴍʙᴇʀꜱʜɪᴘ ᴄᴏɴᴛᴀᴄᴛ ᴛᴏ ᴀᴅᴍɪɴ.",
+    await callback_query.message.edit_text("**💖 Hɘɭp Mɘnu :** \n\n/start ➤ For Check Yukí Is Alive.",
+        reply_markup=reply_markup
+    )
+   
+@bot.on_callback_query(filters.regex("^upgrade_command$"))
+async def upgrade_command_handler(_, callback_query):
+    keyboard = [
+        [
+            InlineKeyboardButton("🫧Admin🫧", url="https://t.me/LegendRobot"),
+            InlineKeyboardButton("🍹Close🍹", callback_data="close_upgrade")
+        ]
+    ]
+    reply_markup = InlineKeyboardMarkup(keyboard)
+    reply_markup = InlineKeyboardMarkup(keyboard)
+    await callback_query.message.edit_text("➻ 𝗙𝗿𝗲𝗲 𝗣𝗹𝗮𝗻 𝗨𝘀𝗲𝗿\n    ➥ Only One txt Dawnload\n    ➥ Price 0\n\n➻ 𝗩𝗜𝗣\n    ➥ Unlimited Dawnload\n    ➥ Price Rs 500  🇮🇳/🌎 30 days Validity\n\n\nꜰᴏʀ ᴍᴇᴍʙᴇʀꜱʜɪᴘ ᴄᴏɴᴛᴀᴄᴛ ᴛᴏ ᴄᴜᴛᴇ ᴀᴅᴍɪɴ.",
         reply_markup=reply_markup
     )
 
 @bot.on_callback_query(filters.regex("^close_upgrade$"))
 async def close_upgrade(_, callback_query):
-    await callback_query.message.delete()   
+    await callback_query.message.delete()
+   
          
 bot.run()
