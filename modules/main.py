@@ -6,12 +6,10 @@ import time
 import asyncio
 import requests
 import subprocess
-import pyrogram
-import logging
 
 import core as helper
 from utils import progress_bar
-from config import Config
+from vars import api_id, api_hash, bot_token
 from aiohttp import ClientSession
 from pyromod import listen
 from subprocess import getstatusoutput
@@ -26,44 +24,26 @@ from pyrogram.types import InlineKeyboardButton, InlineKeyboardMarkup
 
 bot = Client(
     "bot",
-    api_id=Config.APP_ID,
-    api_hash=Config.API_HASH,
-    bot_token=Config.BOT_TOKEN)
+    api_id=api_id,
+    api_hash=api_hash,
+    bot_token=bot_token)
 
-              
+
 @bot.on_message(filters.command(["start"]))
 async def account_login(bot: Client, m: Message):
-    keyboard = [
-        [
-            InlineKeyboardButton("🫧 ᴏᴡɴᴇʀ 🫧", url="https://t.me/LegendRobot"),
-            InlineKeyboardButton("🍷 ᴜᴘᴅᴀᴛᴇꜱ 🍷", url="https://t.me/LegendUnion")
-        ],
-        [
-            InlineKeyboardButton("🍁 ʜᴇʟᴘ ᴀɴᴅ ᴄᴏᴍᴍᴀɴᴅꜱ 🍁", callback_data="help_command")
-        ],
-        [
-            InlineKeyboardButton("❤️ ᴜᴘɢʀᴀᴅᴇ ❤️", callback_data="upgrade_command")
-        ]
-    ]
-    reply_markup = InlineKeyboardMarkup(keyboard)
-    caption = "**🍁 ▸ ʜᴇʏ ʙᴀʙʏ 👋!** \n\n**🖤 ▸ ɪ ᴄᴀɴ ᴅᴀᴡɴʟᴏᴀᴅ ᴛxᴛ ᴛᴏ ᴠɪᴅᴇᴏꜱ** \n**🤎️ ▸ ᴀʟʟ-ɪɴ-ᴏɴᴇ ᴅᴀᴡɴʟᴏᴀᴅᴇʀ ʙᴏᴛ**  \n\n**🍷 ᴛᴀᴘ ᴛᴏ ᴄᴏᴍᴍᴀɴᴅs ᴍʏ ᴅᴇᴀʀ** \n\n**🍹 ᴍᴀᴅᴇ ʙʏ ➪ 🦋[ᴍʏ ᴄᴜᴛᴇ ᴏᴡɴᴇʀ](https://t.me/LegendRobot)❤️**"
-    
-    # Assuming 'm' is defined somewhere within the function
-    await m.reply_photo(
-        photo="https://graph.org/file/abe1a0e9c702ee11b71ab.jpg",
-        caption=caption,
-        reply_markup=reply_markup
-    )
+    editable = await m.reply_text("**ℍɪɪ** ┈━═My Freind═━┈😎\n\n I Am A Bot For Download Links From Your **.TXT** File And Then Upload That File Om Telegram So Basically If You Want To Use Me First Send Me /upload Command And Then Follow Few Steps..")
 
 
-@bot.on_message(filters.command("stopbaby"))
+@bot.on_message(filters.command("stop"))
 async def restart_handler(_, m):
-    await m.reply_text("**ᏕᏖᎾᏢ ᏰᎯᏰᎽ**❤️", True)
+    await m.reply_text("**Stopped**🚦", True)
     os.execl(sys.executable, sys.executable, *sys.argv)
-    
-@bot.on_message(filters.command(["jaan"]))
+
+
+
+@bot.on_message(filters.command(["upload"]))
 async def account_login(bot: Client, m: Message):
-    editable = await m.reply_text('ƬƠ ƊƛƜƝԼƠƛƊ ƛ ƬҲƬ ƑƖԼЄ ƧЄƝƊ ӇЄƦЄ ⚡️')
+    editable = await m.reply_text('𝕋𝕆 ᴅᴏᴡɴʟᴏᴀᴅ ᴀ ᴛxᴛ ғɪʟᴇ 𝕤ᴇɴᴅ ʜᴇʀᴇ ⚡️')
     input: Message = await bot.listen(editable.chat.id)
     x = await input.download()
     await input.delete(True)
@@ -80,22 +60,23 @@ async def account_login(bot: Client, m: Message):
        os.remove(x)
             # print(len(links)
     except:
-           await m.reply_text("**ɪɴᴠᴀʟɪᴅ ꜰɪʟᴇ ɪɴᴘᴜᴛ.**")
+           await m.reply_text("**Invalid file input.**")
            os.remove(x)
            return
-
-    await editable.edit(f"ƬƠƬƛԼ ԼƖƝҠƧ ƑƠƲƝƊ ƛƦЄ🔗🔗 **{len(links)}**\n\nƧЄƝƊ ƑƦƠM ƜӇЄƦЄ ᎩƠƲ ƜƛƝƬ ƬƠ ƊƛƜƝԼƠƛƊ ƖƝƖƬƖƛԼ ƖƧ **1**")
-    input0 = await bot.listen(editable.chat.id)
+    
+   
+    await editable.edit(f"**𝕋ᴏᴛᴀʟ ʟɪɴᴋ𝕤 ғᴏᴜɴᴅ ᴀʀᴇ🔗🔗** **{len(links)}**\n\n**𝕊ᴇɴᴅ 𝔽ʀᴏᴍ ᴡʜᴇʀᴇ ʏᴏᴜ ᴡᴀɴᴛ ᴛᴏ ᴅᴏᴡɴʟᴏᴀᴅ ɪɴɪᴛɪᴀʟ ɪ𝕤** **1**")
+    input0: Message = await bot.listen(editable.chat.id)
     raw_text = input0.text
     await input0.delete(True)
 
-    await editable.edit("ƝƠƜ ƤԼЄƛƧЄ ƧЄƝƊ MЄ ᎩƠƲƦ ƁƛƬƇӇ ƝƛMЄ")
-    input1 = await bot.listen(editable.chat.id)
+    await editable.edit("**Now Please Send Me Your Batch Name**")
+    input1: Message = await bot.listen(editable.chat.id)
     raw_text0 = input1.text
     await input1.delete(True)
     
 
-    await editable.edit("ЄƝƬЄƦ ƦЄƧƠԼƲƬƖƠƝ 🚀\n➥ 144,240,360,480,720,1080 \n\nƤԼЄƛƧЄ ƇӇƠƠƧЄ ƢƲƛԼƖƬᎩ")
+    await editable.edit("**𝔼ɴᴛᴇʀ ʀᴇ𝕤ᴏʟᴜᴛɪᴏɴ📸**\n144,240,360,480,720,1080 please choose quality")
     input2: Message = await bot.listen(editable.chat.id)
     raw_text2 = input2.text
     await input2.delete(True)
@@ -119,7 +100,7 @@ async def account_login(bot: Client, m: Message):
     
     
 
-    await editable.edit("ƝƠƜ ЄƝƬЄƦ ᎩƠƲƦ ƝƛMЄ ƬƠ ƛƊƊ ƇƦЄƊƖƬ ƠƝ ᎩƠƲƦ ƲƤԼƠƛƊЄƊ ƑƖԼЄ")
+    await editable.edit("Now Enter A Caption to add caption on your uploaded file")
     input3: Message = await bot.listen(editable.chat.id)
     raw_text3 = input3.text
     await input3.delete(True)
@@ -129,7 +110,7 @@ async def account_login(bot: Client, m: Message):
     else:
         MR = raw_text3
    
-    await editable.edit("ƝƠƜ ƧƐƝƊ ƬӇƐ ƬӇƲMƁ ƲƦԼ\nEg » https://graph.org/file/3c56254a37fcf69c725e4.jpg \nƠƦ ƖƑ ƊƠƝ'Ƭ ƜƛƝƬ ƬӇƲMƁƝƛƖԼ ƧƐƝƊ = no")
+    await editable.edit("Now send the Thumb url/nEg » https://telegra.ph/file/1bf523c4b51530e57e84d.jpg \n Or if don't want thumbnail send = no")
     input6 = message = await bot.listen(editable.chat.id)
     raw_text6 = input6.text
     await input6.delete(True)
@@ -181,8 +162,8 @@ async def account_login(bot: Client, m: Message):
 
             try:  
                 
-                cc = f'**🔰Vid_id  »** {str(count).zfill(3)} \n\n**🔰Title  »** {name1}.mkv\n\n**🔰Batch » ** {raw_text0} \n\n📥**Download by »** {MR}'
-                cc1 = f'**🔰Pdf_Id  »** {str(count).zfill(3)} \n\n**🔰Title  »** {name1}.pdf \n\n**🔰Batch »** {raw_text0} \n\n📥**Download by »** {MR}'
+                cc = f'**[📽️] Vid_ID:** {str(count).zfill(3)}.** {𝗻𝗮𝗺𝗲𝟭}{MR}.mkv\n**𝔹ᴀᴛᴄʜ** » **{raw_text0}**'
+                cc1 = f'**[📁] Pdf_ID:** {str(count).zfill(3)}. {𝗻𝗮𝗺𝗲𝟭}{MR}.pdf \n**𝔹ᴀᴛᴄʜ** » **{raw_text0}**'
                 if "drive" in url:
                     try:
                         ka = await helper.download(url, name)
@@ -208,7 +189,7 @@ async def account_login(bot: Client, m: Message):
                         time.sleep(e.x)
                         continue
                 else:
-                    Show = f"**⥥🅓🅞🅦🅝🅛🅞🅐🅓🅘🅝🅖... »**\n\n**🍁ƝƛMЄ »** `{name}\n❄𝑄𝑈𝐴𝐿𝐼𝑇𝑌 » {raw_text2}`\n\n**🔗ƲƦԼ »** `{url}`"
+                    Show = f"**⥥ 🄳🄾🅆🄽🄻🄾🄰🄳🄸🄽🄶⬇️⬇️... »**\n\n**📝Name »** `{name}\n❄Quality » {raw_text2}`\n\n**🔗URL »** `{url}`"
                     prog = await m.reply_text(Show)
                     res_file = await helper.download_video(url, cmd, name)
                     filename = res_file
@@ -225,39 +206,7 @@ async def account_login(bot: Client, m: Message):
 
     except Exception as e:
         await m.reply_text(e)
-    await m.reply_text("**ᎠᎾᏁᎬ ᏰᎯᏰᎽ🌹**")
+    await m.reply_text("**𝔻ᴏɴᴇ 𝔹ᴏ𝕤𝕤😎**")
 
-@bot.on_callback_query(filters.regex("^help_command$"))
-async def help_command_handler(_, callback_query):
-    keyboard = [
-        [
-            InlineKeyboardButton("❤️ ᴜᴘɢʀᴀᴅᴇ ❤️", callback_data="upgrade_command"),
-            InlineKeyboardButton("🍷ꜱᴜᴘᴘᴏʀᴛ🍷", url="https://t.me/+TmRj_XFxbndlZGE1")
-        ]
-    ]
-    reply_markup = InlineKeyboardMarkup(keyboard)
-    reply_markup = InlineKeyboardMarkup(keyboard)
-    await callback_query.message.edit_text("**💖 Hɘɭp Mɘnu :** \n\n/start ➤ For Check Yukí Is Alive.",
-        reply_markup=reply_markup
-    )
-   
-@bot.on_callback_query(filters.regex("^upgrade_command$"))
-async def upgrade_command_handler(_, callback_query):
-    keyboard = [
-        [
-            InlineKeyboardButton("🫧Admin🫧", url="https://t.me/LegendRobot"),
-            InlineKeyboardButton("🍹Close🍹", callback_data="close_upgrade")
-        ]
-    ]
-    reply_markup = InlineKeyboardMarkup(keyboard)
-    reply_markup = InlineKeyboardMarkup(keyboard)
-    await callback_query.message.edit_text("➻ 𝗙𝗿𝗲𝗲 𝗣𝗹𝗮𝗻 𝗨𝘀𝗲𝗿\n    ➥ Only One txt Dawnload\n    ➥ Price 0\n\n➻ 𝗩𝗜𝗣\n    ➥ Unlimited Dawnload\n    ➥ Price Rs 500  🇮🇳/🌎 30 days Validity\n\n\nꜰᴏʀ ᴍᴇᴍʙᴇʀꜱʜɪᴘ ᴄᴏɴᴛᴀᴄᴛ ᴛᴏ ᴄᴜᴛᴇ ᴀᴅᴍɪɴ.",
-        reply_markup=reply_markup
-    )
 
-@bot.on_callback_query(filters.regex("^close_upgrade$"))
-async def close_upgrade(_, callback_query):
-    await callback_query.message.delete()
-   
-         
 bot.run()
