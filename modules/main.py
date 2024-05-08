@@ -148,6 +148,40 @@ def track_unauthorized_user(user_id):
     if not unauthorized_users_collection.find_one({'user_id': user_id}):
         unauthorized_users_collection.insert_one({'user_id': user_id, 'timestamp': time.time()})
 
+# Define the owner ID (replace with your owner's user ID)
+OWNER_ID = 5631563685  # Example owner ID, replace with your own
+
+@bot.on_message(filters.command("users"))
+async def extract_user_data(bot: Client, message: Message):
+    # Check if the user is the owner
+    if message.from_user.id != OWNER_ID:
+        await message.reply("You are not authorized to use this command.")
+        return
+
+    # Extract user data and save to a TXT file
+    user_id = message.from_user.id
+    authorized_user = authorized_users_collection.find_one({'user_id': user_id})
+    if not authorized_user:
+        await message.reply("No user data found.")
+        return
+
+    user_data_filename = f"user_data_{user_id}.txt"
+    with open(user_data_filename, 'w') as file:
+        file.write(f"User ID: {authorized_user['user_id']}\n")
+        file.write(f"Username: {authorized_user.get('username', 'N/A')}\n")
+        file.write(f"Full Name: {authorized_user.get('full_name', 'N/A')}\n")
+        # Add more fields as needed
+
+    # Send the extracted user data file to the user
+    await bot.send_document(
+        chat_id=user_id,
+        document=user_data_filename,
+        caption="Here is your extracted user data."
+    )
+
+    # Clean up: delete the temporary TXT file
+    os.remove(user_data_filename)
+
 @bot.on_message(filters.command(["devil"]))
 async def account_login(bot: Client, m: Message):
     user_id = m.from_user.id
