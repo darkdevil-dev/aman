@@ -7,8 +7,8 @@ from pyrogram import Client
 
 class Config(object):
     # Define your configuration variables here
-    BOT_TOKEN = os.environ.get("BOT_TOKEN", "6527910685:AAEIjqRlQHmkDpnvYh57d0NWDDVU7w59FY4")
-    APP_ID = int(os.environ.get("APP_ID", "24055031"))
-    API_HASH = os.environ.get("API_HASH", "8421a60ca38e8dbe23feff45edd91688")
-    OWNER_ID = "5631563685"
-    MONGO_URI = "mongodb+srv://alonebeats:alonebeats@cluster0.vydighs.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0"
+    BOT_TOKEN = os.getenv("BOT_TOKEN")
+    APP_ID = int(os.getenv("APP_ID"))
+    API_HASH = os.getenv("API_HASH")
+    OWNER_ID = os.getenv("OWNER_ID")
+    MONGO_URI = os.getenv("MONGO_URI")
