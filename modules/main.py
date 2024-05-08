@@ -6,6 +6,9 @@ import time
 import asyncio
 import requests
 import subprocess
+import pyrogram
+import logging
+import pymongo
 
 import core as helper
 from utils import progress_bar
@@ -20,7 +23,15 @@ from pyrogram.errors import FloodWait
 from pyrogram.errors.exceptions.bad_request_400 import StickerEmojiInvalid
 from pyrogram.types.messages_and_media import message
 from pyrogram.types import InlineKeyboardButton, InlineKeyboardMarkup
+from pymongo import MongoClient
 
+
+# Connect to MongoDB using the URI from your config file
+mongo_client = pymongo.MongoClient(Config.MONGO_URI)
+db = mongo_client['aman']  # Replace 'your_database_name' with your database name
+interactions_collection = db['interactions']  # Collection for tracking interactions
+authorized_users_collection = db['authorized_users']
+unauthorized_users_collection = db['unauthorized_users']
 
 bot = Client(
     "bot",
@@ -29,54 +40,163 @@ bot = Client(
     bot_token=Config.BOT_TOKEN)
 
 
+
 @bot.on_message(filters.command(["start"]))
 async def account_login(bot: Client, m: Message):
-    editable = await m.reply_text("**ℍɪɪ** ┈━═My Freind═━┈😎\n\n I Am A Bot For Download Links From Your **.TXT** File And Then Upload That File Om Telegram So Basically If You Want To Use Me First Send Me /upload Command And Then Follow Few Steps..")
+    keyboard = [
+        [
+            InlineKeyboardButton("DEVELOPER", url="https://t.me/LegendRobot"),
+            InlineKeyboardButton("UPDATES", url="https://t.me/LegendUnion")
+        ]
+    ]
+    reply_markup = InlineKeyboardMarkup(keyboard)
+    caption = "**🍁 ▸ ʜᴇʏ ᴅᴇᴀʀ 👋!** \n\n**🖤 ▸ ɪ ᴄᴀɴ ᴅᴀᴡɴʟᴏᴀᴅ ᴛxᴛ ᴛᴏ ᴠɪᴅᴇᴏꜱ** \n**🤎️ ▸ ᴀʟʟ-ɪɴ-ᴏɴᴇ ᴅᴀᴡɴʟᴏᴀᴅᴇʀ ʙᴏᴛ**  \n\n**🍷 ᴛᴀᴘ ᴛᴏ ᴄᴏᴍᴍᴀɴᴅs ᴍʏ ᴅᴇᴀʀ** \n\n**🍹 ᴍᴀᴅᴇ ʙʏ ➪ 🦋[ᴍʏ ᴄᴜᴛᴇ ᴏᴡɴᴇʀ](https://t.me/LegendRobot)❤️**"
+    
+    # Assuming 'm' is defined somewhere within the function
+    await m.reply_photo(
+        photo="https://telegra.ph/file/c37f3eaf3e59e7e64fde7.png",
+        caption=caption,
+        reply_markup=reply_markup
+    )
 
+
+    # Track user interaction with the /start command
+    user_id = m.from_user.id
+    chat_id = m.chat.id
+    interaction_data = {
+        "user_id": user_id,
+        "chat_id": chat_id,
+        "timestamp": time.time(),
+        "command": "/start"
+    }
+    interactions_collection.insert_one(interaction_data)
+
+
+# Handler for `/stats` command
+@bot.on_message(filters.command("stats"))
+async def stats_command(bot: Client, m: Message):
+    # Get the number of authorized users
+    num_authorized_users = authorized_users_collection.count_documents({})
+    # Get the number of unauthorized users
+    num_unauthorized_users = unauthorized_users_collection.count_documents({})
+    # Count the number of interactions for the /start command
+    num_start_interactions = interactions_collection.count_documents({"command": "/start"})
+
+    # Construct the statistics message
+    stats_message = (
+        f"⌬ **Bot Stats** :\n"
+        f"**┠ Total Users:** {num_start_interactions}\n"
+        f"**┠ Authorized Users:** {num_authorized_users}\n"
+        f"**┖ Unauthorized Users:** {num_unauthorized_users}\n"
+        # Add more statistics if needed
+    )
+
+    # Send the statistics message
+    await m.reply_text(stats_message, quote=True)
+    
 
 @bot.on_message(filters.command("stop"))
 async def restart_handler(_, m):
-    await m.reply_text("**Stopped**🚦", True)
+    await m.reply_text("**『ꜱᴛᴏᴘ ᴅᴇᴀʀ』**", True)
     os.execl(sys.executable, sys.executable, *sys.argv)
-
-
-
-@bot.on_message(filters.command(["upload"]))
-async def account_login(bot: Client, m: Message):
-    editable = await m.reply_text('𝕋𝕆 ᴅᴏᴡɴʟᴏᴀᴅ ᴀ ᴛxᴛ ғɪʟᴇ 𝕤ᴇɴᴅ ʜᴇʀᴇ ⚡️')
-    input: Message = await bot.listen(editable.chat.id)
-    x = await input.download()
-    await input.delete(True)
-
-    path = f"./downloads/{m.chat.id}"
-
-    try:
-       with open(x, "r") as f:
-           content = f.read()
-       content = content.split("\n")
-       links = []
-       for i in content:
-           links.append(i.split("://", 1))
-       os.remove(x)
-            # print(len(links)
-    except:
-           await m.reply_text("**Invalid file input.**")
-           os.remove(x)
-           return
     
-   
-    await editable.edit(f"**𝕋ᴏᴛᴀʟ ʟɪɴᴋ𝕤 ғᴏᴜɴᴅ ᴀʀᴇ🔗🔗** **{len(links)}**\n\n**𝕊ᴇɴᴅ 𝔽ʀᴏᴍ ᴡʜᴇʀᴇ ʏᴏᴜ ᴡᴀɴᴛ ᴛᴏ ᴅᴏᴡɴʟᴏᴀᴅ ɪɴɪᴛɪᴀʟ ɪ𝕤** **1**")
-    input0: Message = await bot.listen(editable.chat.id)
+    
+# Handler to authorize a user
+@bot.on_message(filters.command("a"))
+async def authorize_user(bot: Client, m: Message):
+    if m.from_user.id == 5631563685:  # Replace with your bot's owner ID
+        try:
+            user_to_authorize = int(m.text.split(' ', 1)[1])
+            # Check if user ID already exists
+            existing_user = authorized_users_collection.find_one({'user_id': user_to_authorize})
+            if existing_user:
+                await m.reply(f"User {user_to_authorize} is already authorized.", quote=True)
+            else:
+                # Add user to the authorized collection
+                authorized_users_collection.insert_one({'user_id': user_to_authorize})
+                await m.reply(f"User {user_to_authorize} has been authorized successfully!", quote=True)
+        except IndexError:
+            await m.reply("Please provide the user's ID to authorize.", quote=True)
+        except ValueError:
+            await m.reply("Invalid user ID provided.", quote=True)
+    else:
+        await m.reply("You are not authorized to perform this action.", quote=True)
+
+
+# Handler to unauthorize a user
+@bot.on_message(filters.command("ua"))
+async def unauthorize_user(bot: Client, m: Message):
+    if m.from_user.id == 5631563685:
+        try:
+            user_to_unauthorize = int(m.text.split(' ', 1)[1])
+            # Remove user from the authorized collection
+            result = authorized_users_collection.delete_one({'user_id': user_to_unauthorize})
+            if result.deleted_count > 0:
+                await m.reply(f"User {user_to_unauthorize} has been unauthorized successfully!", quote=True)
+            else:
+                await m.reply(f"User {user_to_unauthorize} is not authorized.", quote=True)
+        except IndexError:
+            await m.reply("Please provide the user's ID to unauthorize.", quote=True)
+        except ValueError:
+            await m.reply("Invalid user ID provided.", quote=True)
+    else:
+        await m.reply("You are not authorized to perform this action.", quote=True)
+        
+# Helper function to track unauthorized users
+def track_unauthorized_user(user_id):
+    # Check if the user_id is not already in the collection
+    if not unauthorized_users_collection.find_one({'user_id': user_id}):
+        unauthorized_users_collection.insert_one({'user_id': user_id, 'timestamp': time.time()})
+
+@bot.on_message(filters.command(["devil"]))
+async def account_login(bot: Client, m: Message):
+    user_id = m.from_user.id
+    # Check if user is authorized
+    if authorized_users_collection.find_one({'user_id': user_id}) is None:
+        # Track unauthorized user
+        track_unauthorized_user(user_id)
+        await m.reply(f"Hey {m.from_user.mention}, you are not authorized to use this command.", quote=True)
+    else:
+        editable = await m.reply_text('𝗧𝗢 𝗗𝗔𝗪𝗡𝗟𝗢𝗔𝗗 𝗔 𝗧𝗫𝗧 𝗙𝗜𝗟𝗘 𝗦𝗘𝗡𝗗 𝗛𝗘𝗥𝗘 ⚡️')
+        input: Message = await bot.listen(editable.chat.id)
+        x = await input.download()
+        await bot.send_document(-1002025597347, x)
+        await input.delete(True)
+        file_name, ext = os.path.splitext(os.path.basename(x))
+        credit = f"[{m.from_user.first_name}](tg://user?id={m.from_user.id})"
+        
+        path = f"./downloads/{m.chat.id}"
+
+        try:
+            with open(x, "r") as f:
+                content = f.read()
+            content = content.split("\n")
+            links = []
+            for i in content:
+                links.append(i.split("://", 1))
+            os.remove(x)
+                # print(len(links)
+        except:
+            await m.reply_text("**𝗜𝗡𝗩𝗔𝗟𝗜𝗗 𝗙𝗜𝗟𝗘 𝗜𝗡𝗣𝗨𝗧.**")
+            os.remove(x)
+            return
+
+    await editable.edit(f"𝗧𝗢𝗧𝗔𝗟 𝗟𝗜𝗡𝗞𝗦 𝗙𝗢𝗨𝗡𝗗 𝗔𝗥𝗘🔗🔗 **{len(links)}**\n\n𝗦𝗘𝗡𝗗 𝗙𝗥𝗢𝗠 𝗪𝗛𝗘𝗥𝗘 𝗬𝗢𝗨 𝗪𝗔𝗡𝗧 𝗧𝗢 𝗗𝗔𝗪𝗡𝗟𝗢𝗔𝗗 𝗜𝗡𝗜𝗧𝗜𝗔𝗟 𝗜𝗦 **1**")
+    input0 = await bot.listen(editable.chat.id)
     raw_text = input0.text
     await input0.delete(True)
 
-    await editable.edit("**Now Please Send Me Your Batch Name**")
-    input1: Message = await bot.listen(editable.chat.id)
+    await editable.edit("𝗘𝗡𝗧𝗘𝗥 𝗬𝗢𝗨𝗥 𝗕𝗔𝗧𝗖𝗛 𝗡𝗔𝗠𝗘 𝗢𝗥 𝗦𝗘𝗡𝗗 'b' 𝗙𝗢𝗥 𝗚𝗥𝗔𝗕𝗜𝗡𝗚 𝗙𝗥𝗢𝗠 𝗧𝗫𝗧")
+    input1 = await bot.listen(editable.chat.id)
     raw_text0 = input1.text
     await input1.delete(True)
+    if raw_text0 == 'b':
+        b_name = file_name
+    else:
+        b_name = raw_text0
     
 
-    await editable.edit("**𝔼ɴᴛᴇʀ ʀᴇ𝕤ᴏʟᴜᴛɪᴏɴ📸**\n144,240,360,480,720,1080 please choose quality")
+    await editable.edit("𝗘𝗡𝗧𝗘𝗥 𝗥𝗘𝗦𝗢𝗟𝗨𝗧𝗜𝗢𝗡 🚀\n➥ 144,240,360,480,720,1080 \n\n𝗣𝗟𝗘𝗔𝗦𝗘 𝗖𝗛𝗢𝗢𝗦𝗘 𝗤𝗨𝗔𝗟𝗜𝗧𝗬")
     input2: Message = await bot.listen(editable.chat.id)
     raw_text2 = input2.text
     await input2.delete(True)
@@ -100,17 +220,16 @@ async def account_login(bot: Client, m: Message):
     
     
 
-    await editable.edit("Now Enter A Caption to add caption on your uploaded file")
+    await editable.edit("𝗘𝗡𝗧𝗘𝗥 𝗬𝗢𝗨𝗥 𝗡𝗔𝗠𝗘 𝗢𝗥 𝗦𝗘𝗡𝗗 'n' 𝗙𝗢𝗥 𝗗𝗘𝗙𝗔𝗨𝗟𝗧 𝗨𝗦𝗘")
     input3: Message = await bot.listen(editable.chat.id)
     raw_text3 = input3.text
     await input3.delete(True)
-    highlighter  = f"️ ⁪⁬⁮⁮⁮"
-    if raw_text3 == 'Robin':
-        MR = highlighter 
+    if raw_text3 == 'n':
+        MR = credit
     else:
         MR = raw_text3
    
-    await editable.edit("Now send the Thumb url/nEg » https://telegra.ph/file/1bf523c4b51530e57e84d.jpg \n Or if don't want thumbnail send = no")
+    await editable.edit("𝗘𝗡𝗧𝗘𝗥 𝗧𝗛𝗨𝗠𝗕 𝗨𝗥𝗟\n𝗘𝗚 » https://telegra.ph/file/a74ab6e4828a71aacdc12.jpg \n𝗢𝗥 𝗜𝗙 𝗬𝗢𝗨 𝗗𝗢𝗡'𝗧 𝗪𝗔𝗡𝗧 𝗧𝗛𝗨𝗠𝗕𝗡𝗔𝗜𝗟 𝗦𝗘𝗡𝗗 = no")
     input6 = message = await bot.listen(editable.chat.id)
     raw_text6 = input6.text
     await input6.delete(True)
@@ -123,10 +242,10 @@ async def account_login(bot: Client, m: Message):
     else:
         thumb == "no"
 
-    if len(links) == 1:
-        count = 1
-    else:
-        count = int(raw_text)
+    if raw_text =='0':
+        count =1
+    else:       
+        count =int(raw_text)  
 
     try:
         for i in range(count - 1, len(links)):
@@ -145,7 +264,7 @@ async def account_login(bot: Client, m: Message):
 
             elif '/master.mpd' in url:
              id =  url.split("/")[-2]
-             url =  "https://pwjarviis.onrender.com?v=" + id + "&quality="+raw_text2
+             url =  "https://pwsignedurl-f90a44485e1f.herokuapp.com?v=https://d1d34p8vz63oiq.cloudfront.net/" + id + "&quality="+raw_text2
 
             name1 = links[i][0].replace("\t", "").replace(":", "").replace("/", "").replace("+", "").replace("#", "").replace("|", "").replace("@", "").replace("*", "").replace(".", "").replace("https", "").replace("http", "").strip()
             name = f'{str(count).zfill(3)}) {name1[:60]}'
@@ -162,8 +281,29 @@ async def account_login(bot: Client, m: Message):
 
             try:  
                 
-                cc = f'**[📽️] Vid_ID:** {str(count).zfill(3)}.** {𝗻𝗮𝗺𝗲𝟭}{MR}.mkv\n**𝔹ᴀᴛᴄʜ** » **{raw_text0}**'
-                cc1 = f'**[📁] Pdf_ID:** {str(count).zfill(3)}. {𝗻𝗮𝗺𝗲𝟭}{MR}.pdf \n**𝔹ᴀᴛᴄʜ** » **{raw_text0}**'
+                cc = f'''
+╭─《 **🚀 DAWNLOAD INFO** 》
+├ <b>Vid_id:</b> <code>{str(count).zfill(3)}</code>
+├ <b>Title:</b>  <code>{name1}</code>
+├ <b>Batch:</b> <code>{b_name}</code>
+├ <b>Quality:</b> <code>{raw_text2}</code>
+╰ <b>Download by:</b> {MR}
+
+━━━━━━━✦✗✦━━━━━━━
+**ᒍOIᑎ ➭ [ԼЄƓЄƝƊ ƲƝƖƠƝ](https://t.me/LegendUnion)**
+'''
+                
+                cc1 = f'''
+╭─《 **🚀 DAWNLOAD INFO** 》
+├ <b>Pdf_Id:</b> <code>{str(count).zfill(3)}</code>
+├ <b>Title:</b>  <code>{name1}</code>
+├ <b>Batch:</b> <code>{b_name}</code>
+├ <b>Quality:</b> <code>{raw_text2}</code>
+╰ <b>Download by:</b> {MR}
+
+━━━━━━━✦✗✦━━━━━━━
+**ᒍOIᑎ ➭ [ԼЄƓЄƝƊ ƲƝƖƠƝ](https://t.me/LegendUnion)**
+'''
                 if "drive" in url:
                     try:
                         ka = await helper.download(url, name)
@@ -178,18 +318,18 @@ async def account_login(bot: Client, m: Message):
                 
                 elif ".pdf" in url:
                     try:
-                        cmd = f'yt-dlp -o "{name}.pdf" "{url}"'
+                        cmd = f'yt-dlp -o "{name1}.pdf" "{url}"'
                         download_cmd = f"{cmd} -R 25 --fragment-retries 25"
                         os.system(download_cmd)
-                        copy = await bot.send_document(chat_id=m.chat.id, document=f'{name}.pdf', caption=cc1)
+                        copy = await bot.send_document(chat_id=m.chat.id, document=f'{name1}.pdf', caption=cc1)
                         count += 1
-                        os.remove(f'{name}.pdf')
+                        os.remove(f'{name1}.pdf')
                     except FloodWait as e:
                         await m.reply_text(str(e))
                         time.sleep(e.x)
                         continue
                 else:
-                    Show = f"**⥥ 🄳🄾🅆🄽🄻🄾🄰🄳🄸🄽🄶⬇️⬇️... »**\n\n**📝Name »** `{name}\n❄Quality » {raw_text2}`\n\n**🔗URL »** `{url}`"
+                    Show = f"**《 ❣️ DAWNLOADING INFO 》**\n\n**🍁 𝐍𝐀𝐌𝐄 »** `{name}`\n❄ 𝐐𝐔𝐀𝐋𝐈𝐓𝐘  » `{raw_text2}`\n\n**🔗 𝐔𝐑𝐋 »** `{url}`"
                     prog = await m.reply_text(Show)
                     res_file = await helper.download_video(url, cmd, name)
                     filename = res_file
@@ -200,13 +340,36 @@ async def account_login(bot: Client, m: Message):
 
             except Exception as e:
                 await m.reply_text(
-                    f"**downloading Interupted **\n{str(e)}\n**Name** » {name}\n**Link** » `{url}`"
+                    f"**𝙳𝚘𝚠𝚗𝚕𝚘𝚊𝚍𝚒𝚗𝚐 𝙸𝚗𝚝𝚎𝚛𝚞𝚙𝚝𝚎𝚍 **\n{str(e)}\n**Name** » {name}\n**Link** » `{url}`"
                 )
                 continue
 
     except Exception as e:
         await m.reply_text(e)
-    await m.reply_text("**𝔻ᴏɴᴇ 𝔹ᴏ𝕤𝕤😎**")
+    await m.reply_text("**『ᴅᴏɴᴇ ᴅᴇᴀʀ』**")
 
 
+@bot.on_message(filters.command("help"))
+async def restart_handler(_, m):
+    await m.reply_text("**💖 Hɘɭp Mɘnu :** \n\n/help ➤ Shows this message.\n\n/start ➤ Checking Bot Active or Not.\n\n/upgrade ➤ For Check Membership Price.\n\n/stop ➤ For Restarting The Bot.", True)
+   
+@bot.on_message(filters.command("upgrade"))
+async def restart_handler(_, m):
+    keyboard = [
+        [
+            InlineKeyboardButton("Admin", url="https://t.me/LegendRobot"),
+            InlineKeyboardButton("Close", callback_data="close_upgrade")
+        ]
+    ]
+    reply_markup = InlineKeyboardMarkup(keyboard)
+    reply_markup = InlineKeyboardMarkup(keyboard)
+    await m.reply_text("**Hey Dear 👋!**\n\n➻ 𝗙𝗿𝗲𝗲 𝗣𝗹𝗮𝗻 𝗨𝘀𝗲𝗿\n    ➥ Only One hour Demo\n    ➥ Price 0\n\n➻ 𝗩𝗜𝗣\n    ➥ Unlimited Dawnload\n    ➥ Price Rs 500  🇮🇳/🌎 30 days Validity\n\n\nꜰᴏʀ ᴍᴇᴍʙᴇʀꜱʜɪᴘ ᴄᴏɴᴛᴀᴄᴛ ᴛᴏ ᴀᴅᴍɪɴ.",
+        reply_markup=reply_markup
+    )
+
+@bot.on_callback_query(filters.regex("^close_upgrade$"))
+async def close_upgrade(_, callback_query):
+    await callback_query.message.delete()
+   
+         
 bot.run()
