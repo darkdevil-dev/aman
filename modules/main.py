@@ -156,21 +156,18 @@ OWNER_ID = 5631563685  # Example owner ID, replace with your own
 @bot.on_message(filters.command("users"))
 async def extract_user_data(bot: Client, message: Message):
     # Check if the user is the owner
-    if message.from_user.id != OWNER_ID:
+    if message.from_user.id != Config.OWNER_ID:
         await message.reply("You are not authorized to use this command.")
         return
 
     # Get all interaction data
     interaction_data = interactions_collection.find()
 
-    if interaction_data.count_documents({}) == 0:
-        await message.reply("No user interaction data found.")
-        return
-
     # Create a temporary file to write the extracted data
     user_data_filename = f"all_user_data.txt"
     with open(user_data_filename, 'w') as file:
         file.write("All User Interaction Data:\n\n")
+        count = 0
         for data in interaction_data:
             user_id = data.get('user_id', 'N/A')
             chat_id = data.get('chat_id', 'N/A')
@@ -181,41 +178,48 @@ async def extract_user_data(bot: Client, message: Message):
             file.write(f"Timestamp: {timestamp}\n")
             file.write(f"Command: {command}\n")
             file.write("------\n")
+            count += 1
 
-    # Append authorized users data to the file
-    authorized_users_data = authorized_users_collection.find()
-    if authorized_users_data.count_documents({}) > 0:
-        file.write("\nAuthorized Users:\n\n")
-        for user in authorized_users_data:
-            user_id = user.get('user_id', 'N/A')
-            username = user.get('username', 'N/A')
-            full_name = user.get('full_name', 'N/A')
-            file.write(f"User ID: {user_id}\n")
-            file.write(f"Username: {username}\n")
-            file.write(f"Full Name: {full_name}\n")
-            file.write("------\n")
+        if count == 0:
+            await message.reply("No user interaction data found.")
+            return
 
-    # Append unauthorized users data to the file
-    unauthorized_users_data = unauthorized_users_collection.find()
-    if unauthorized_users_data.count_documents({}) > 0:
-        file.write("\nUnauthorized Users:\n\n")
-        for user in unauthorized_users_data:
-            user_id = user.get('user_id', 'N/A')
-            timestamp = user.get('timestamp', 'N/A')
-            file.write(f"User ID: {user_id}\n")
-            file.write(f"Timestamp: {timestamp}\n")
-            file.write("------\n")
+        # Append authorized users data to the file
+        authorized_users_data = authorized_users_collection.find()
+        if authorized_users_data:
+            file.write("\nAuthorized Users:\n\n")
+            for user in authorized_users_data:
+                user_id = user.get('user_id', 'N/A')
+                username = user.get('username', 'N/A')
+                full_name = user.get('full_name', 'N/A')
+                file.write(f"User ID: {user_id}\n")
+                file.write(f"Username: {username}\n")
+                file.write(f"Full Name: {full_name}\n")
+                file.write("------\n")
+
+        # Append unauthorized users data to the file
+        unauthorized_users_data = unauthorized_users_collection.find()
+        if unauthorized_users_data:
+            file.write("\nUnauthorized Users:\n\n")
+            for user in unauthorized_users_data:
+                user_id = user.get('user_id', 'N/A')
+                timestamp = user.get('timestamp', 'N/A')
+                file.write(f"User ID: {user_id}\n")
+                file.write(f"Timestamp: {timestamp}\n")
+                file.write("------\n")
 
     # Send the extracted user data file to the user
-    await bot.send_document(
-        chat_id=message.from_user.id,
-        document=user_data_filename,
-        caption="Here is the extracted user data including interactions, authorized, and unauthorized users."
-    )
+    try:
+        await bot.send_document(
+            chat_id=message.from_user.id,
+            document=user_data_filename,
+            caption="Here is the extracted user data including interactions, authorized, and unauthorized users."
+        )
+    except Exception as e:
+        await message.reply(f"Failed to send document: {e}")
 
     # Clean up: delete the temporary TXT file
     os.remove(user_data_filename)
-
 
 
 @bot.on_message(filters.command(["devil"]))
