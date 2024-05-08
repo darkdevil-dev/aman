@@ -24,6 +24,7 @@ from pyrogram.errors.exceptions.bad_request_400 import StickerEmojiInvalid
 from pyrogram.types.messages_and_media import message
 from pyrogram.types import InlineKeyboardButton, InlineKeyboardMarkup
 from pymongo import MongoClient
+from datetime import datetime
 
 
 # Connect to MongoDB using the URI from your config file
@@ -35,7 +36,7 @@ unauthorized_users_collection = db['unauthorized_users']
 
 bot = Client(
     "bot",
-    api_id=Config.API_ID,
+    api_id=Config.APP_ID,
     api_hash=Config.API_HASH,
     bot_token=Config.BOT_TOKEN)
 
@@ -149,10 +150,28 @@ def track_unauthorized_user(user_id):
         unauthorized_users_collection.insert_one({'user_id': user_id, 'timestamp': time.time()})
 
 
+import os
+from pyrogram import Client, filters
+from pyrogram.types import Message
+import pymongo
+from datetime import datetime
 
-# Define the owner ID (replace with your owner's user ID)
-OWNER_ID = 5631563685  # Example owner ID, replace with your own
+# Connect to MongoDB using the URI from your config file
+mongo_client = pymongo.MongoClient(Config.MONGO_URI)
+db = mongo_client['aman']
+interactions_collection = db['interactions']
+authorized_users_collection = db['authorized_users']
+unauthorized_users_collection = db['unauthorized_users']
 
+bot = Client(
+    "bot",
+    api_id=Config.APP_ID,
+    api_hash=Config.API_HASH,
+    bot_token=Config.BOT_TOKEN
+)
+
+
+#Users Data
 @bot.on_message(filters.command("users"))
 async def extract_user_data(bot: Client, message: Message):
     # Check if the user is the owner
@@ -173,9 +192,13 @@ async def extract_user_data(bot: Client, message: Message):
             chat_id = data.get('chat_id', 'N/A')
             timestamp = data.get('timestamp', 'N/A')
             command = data.get('command', 'N/A')
+
+            # Convert timestamp to human-readable format
+            timestamp_formatted = datetime.fromtimestamp(timestamp).strftime('%Y-%m-%d %H:%M:%S')
+
             file.write(f"User ID: {user_id}\n")
             file.write(f"Chat ID: {chat_id}\n")
-            file.write(f"Timestamp: {timestamp}\n")
+            file.write(f"Timestamp: {timestamp_formatted}\n")
             file.write(f"Command: {command}\n")
             file.write("------\n")
             count += 1
@@ -190,11 +213,16 @@ async def extract_user_data(bot: Client, message: Message):
             file.write("\nAuthorized Users:\n\n")
             for user in authorized_users_data:
                 user_id = user.get('user_id', 'N/A')
+                timestamp = user.get('timestamp', 'N/A')
+
+                # Convert timestamp to human-readable format
+                timestamp_formatted = datetime.fromtimestamp(timestamp).strftime('%Y-%m-%d %H:%M:%S')                
                 username = user.get('username', 'N/A')
                 full_name = user.get('full_name', 'N/A')
                 file.write(f"User ID: {user_id}\n")
                 file.write(f"Username: {username}\n")
                 file.write(f"Full Name: {full_name}\n")
+                file.write(f"Timestamp: {timestamp_formatted}\n")                
                 file.write("------\n")
 
         # Append unauthorized users data to the file
@@ -204,8 +232,12 @@ async def extract_user_data(bot: Client, message: Message):
             for user in unauthorized_users_data:
                 user_id = user.get('user_id', 'N/A')
                 timestamp = user.get('timestamp', 'N/A')
+
+                # Convert timestamp to human-readable format
+                timestamp_formatted = datetime.fromtimestamp(timestamp).strftime('%Y-%m-%d %H:%M:%S')
+
                 file.write(f"User ID: {user_id}\n")
-                file.write(f"Timestamp: {timestamp}\n")
+                file.write(f"Timestamp: {timestamp_formatted}\n")
                 file.write("------\n")
 
     # Send the extracted user data file to the user
