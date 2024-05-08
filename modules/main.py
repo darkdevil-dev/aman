@@ -147,10 +147,7 @@ def track_unauthorized_user(user_id):
     # Check if the user_id is not already in the collection
     if not unauthorized_users_collection.find_one({'user_id': user_id}):
         unauthorized_users_collection.insert_one({'user_id': user_id, 'timestamp': time.time()})
-        
 
-# Define the owner ID (replace with your owner's user ID)
-OWNER_ID = 5631563685  # Example owner ID, replace with your own
 
 @bot.on_message(filters.command("users"))
 async def extract_user_data(bot: Client, message: Message):
@@ -162,7 +159,7 @@ async def extract_user_data(bot: Client, message: Message):
     # Get all interaction data
     interaction_data = interactions_collection.find()
 
-    if interaction_data.count() == 0:
+    if interaction_data.count_documents({}) == 0:
         await message.reply("No user interaction data found.")
         return
 
@@ -183,7 +180,7 @@ async def extract_user_data(bot: Client, message: Message):
 
     # Append authorized users data to the file
     authorized_users_data = authorized_users_collection.find()
-    if authorized_users_data.count() > 0:
+    if authorized_users_data.count_documents({}) > 0:
         file.write("\nAuthorized Users:\n\n")
         for user in authorized_users_data:
             user_id = user.get('user_id', 'N/A')
@@ -196,7 +193,7 @@ async def extract_user_data(bot: Client, message: Message):
 
     # Append unauthorized users data to the file
     unauthorized_users_data = unauthorized_users_collection.find()
-    if unauthorized_users_data.count() > 0:
+    if unauthorized_users_data.count_documents({}) > 0:
         file.write("\nUnauthorized Users:\n\n")
         for user in unauthorized_users_data:
             user_id = user.get('user_id', 'N/A')
@@ -213,7 +210,9 @@ async def extract_user_data(bot: Client, message: Message):
     )
 
     # Clean up: delete the temporary TXT file
-    os.remove(user_data_filename)        
+    os.remove(user_data_filename)
+
+
 
 @bot.on_message(filters.command(["devil"]))
 async def account_login(bot: Client, m: Message):
