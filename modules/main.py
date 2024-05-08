@@ -149,6 +149,10 @@ def track_unauthorized_user(user_id):
         unauthorized_users_collection.insert_one({'user_id': user_id, 'timestamp': time.time()})
 
 
+
+# Define the owner ID (replace with your owner's user ID)
+OWNER_ID = 5631563685  # Example owner ID, replace with your own
+
 @bot.on_message(filters.command("users"))
 async def extract_user_data(bot: Client, message: Message):
     # Check if the user is the owner
