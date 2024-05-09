@@ -157,7 +157,7 @@ def track_unauthorized_user(user_id):
 async def extract_user_data(bot: Client, message: Message):
     # Check if the user is the owner
     if message.from_user.id != Config.OWNER_ID:
-        await message.reply("You are not my owner to use this command.")
+        await message.reply("You are not authorized to use this command.")
         return
 
     # Get all interaction data
@@ -174,8 +174,12 @@ async def extract_user_data(bot: Client, message: Message):
             timestamp = data.get('timestamp', 'N/A')
             command = data.get('command', 'N/A')
 
-            # Convert timestamp to human-readable format
-            timestamp_formatted = datetime.fromtimestamp(timestamp).strftime('%Y-%m-%d %H:%M:%S')
+            # Ensure `timestamp` is converted to an integer
+            try:
+                timestamp = int(timestamp)
+                timestamp_formatted = datetime.datetime.fromtimestamp(timestamp).strftime('%Y-%m-%d %H:%M:%S')
+            except (ValueError, TypeError):
+                timestamp_formatted = 'Invalid Timestamp'
 
             file.write(f"User ID: {user_id}\n")
             file.write(f"Chat ID: {chat_id}\n")
@@ -194,16 +198,21 @@ async def extract_user_data(bot: Client, message: Message):
             file.write("\nAuthorized Users:\n\n")
             for user in authorized_users_data:
                 user_id = user.get('user_id', 'N/A')
-                timestamp = user.get('timestamp', 'N/A')
-
-                # Convert timestamp to human-readable format
-                timestamp_formatted = datetime.fromtimestamp(timestamp).strftime('%Y-%m-%d %H:%M:%S')                
                 username = user.get('username', 'N/A')
                 full_name = user.get('full_name', 'N/A')
+                timestamp = user.get('timestamp', 'N/A')
+
+                # Ensure `timestamp` is converted to an integer
+                try:
+                    timestamp = int(timestamp)
+                    timestamp_formatted = datetime.datetime.fromtimestamp(timestamp).strftime('%Y-%m-%d %H:%M:%S')
+                except (ValueError, TypeError):
+                    timestamp_formatted = 'Invalid Timestamp'
+
                 file.write(f"User ID: {user_id}\n")
                 file.write(f"Username: {username}\n")
                 file.write(f"Full Name: {full_name}\n")
-                file.write(f"Timestamp: {timestamp_formatted}\n")                
+                file.write(f"Timestamp: {timestamp_formatted}\n")
                 file.write("------\n")
 
         # Append unauthorized users data to the file
@@ -214,8 +223,12 @@ async def extract_user_data(bot: Client, message: Message):
                 user_id = user.get('user_id', 'N/A')
                 timestamp = user.get('timestamp', 'N/A')
 
-                # Convert timestamp to human-readable format
-                timestamp_formatted = datetime.fromtimestamp(timestamp).strftime('%Y-%m-%d %H:%M:%S')
+                # Ensure `timestamp` is converted to an integer
+                try:
+                    timestamp = int(timestamp)
+                    timestamp_formatted = datetime.datetime.fromtimestamp(timestamp).strftime('%Y-%m-%d %H:%M:%S')
+                except (ValueError, TypeError):
+                    timestamp_formatted = 'Invalid Timestamp'
 
                 file.write(f"User ID: {user_id}\n")
                 file.write(f"Timestamp: {timestamp_formatted}\n")
@@ -226,13 +239,14 @@ async def extract_user_data(bot: Client, message: Message):
         await bot.send_document(
             chat_id=message.from_user.id,
             document=user_data_filename,
-            caption="**By : @LegendRobot**"
+            caption="Here is the extracted user data including interactions, authorized, and unauthorized users."
         )
     except Exception as e:
         await message.reply(f"Failed to send document: {e}")
 
     # Clean up: delete the temporary TXT file
     os.remove(user_data_filename)
+            
 
 
 @bot.on_message(filters.command(["devil"]))
