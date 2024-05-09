@@ -12,6 +12,7 @@ class Config(object):
     API_HASH = os.environ.get('API_HASH')
     OWNER_ID = int(os.environ.get('OWNER_ID'))
     MONGO_URI = os.environ.get('MONGO_URI')
+    ADMIN_ID = int(os.environ.get('ADMIN_ID'))
     
     
   
