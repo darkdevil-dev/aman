@@ -36,7 +36,7 @@ unauthorized_users_collection = db['unauthorized_users']
 
 bot = Client(
     "bot",
-    api_id=Config.APP_ID,
+    api_id=Config.API_ID,
     api_hash=Config.API_HASH,
     bot_token=Config.BOT_TOKEN)
 
@@ -150,25 +150,6 @@ def track_unauthorized_user(user_id):
         unauthorized_users_collection.insert_one({'user_id': user_id, 'timestamp': time.time()})
 
 
-import os
-from pyrogram import Client, filters
-from pyrogram.types import Message
-import pymongo
-from datetime import datetime
-
-# Connect to MongoDB using the URI from your config file
-mongo_client = pymongo.MongoClient(Config.MONGO_URI)
-db = mongo_client['aman']
-interactions_collection = db['interactions']
-authorized_users_collection = db['authorized_users']
-unauthorized_users_collection = db['unauthorized_users']
-
-bot = Client(
-    "bot",
-    api_id=Config.APP_ID,
-    api_hash=Config.API_HASH,
-    bot_token=Config.BOT_TOKEN
-)
 
 
 #Users Data
@@ -176,7 +157,7 @@ bot = Client(
 async def extract_user_data(bot: Client, message: Message):
     # Check if the user is the owner
     if message.from_user.id != Config.OWNER_ID:
-        await message.reply("You are not authorized to use this command.")
+        await message.reply("You are not my owner to use this command.")
         return
 
     # Get all interaction data
@@ -245,7 +226,7 @@ async def extract_user_data(bot: Client, message: Message):
         await bot.send_document(
             chat_id=message.from_user.id,
             document=user_data_filename,
-            caption="Here is the extracted user data including interactions, authorized, and unauthorized users."
+            caption="**By : @LegendRobot**"
         )
     except Exception as e:
         await message.reply(f"Failed to send document: {e}")
