@@ -105,7 +105,7 @@ async def restart_handler(_, m):
 # Handler to authorize a user
 @bot.on_message(filters.command("a"))
 async def authorize_user(bot: Client, m: Message):
-    if m.from_user.id == 5631563685:  # Replace with your bot's owner ID
+    if m.from_user.id != Config.ADMIN_ID:  # Replace with your bot's admin ID
         try:
             user_to_authorize = int(m.text.split(' ', 1)[1])
             # Check if user ID already exists
@@ -123,7 +123,7 @@ async def authorize_user(bot: Client, m: Message):
     else:
         await m.reply("You are not authorized to perform this action.", quote=True)
         
-# Helper function to track unauthorized users
+# Helper function to track authorized users
 def track_authorized_user(user_id):
     # Check if the user_id is not already in the collection
     if not authorized_users_collection.find_one({'user_id': user_id}):
@@ -132,7 +132,7 @@ def track_authorized_user(user_id):
 # Handler to unauthorize a user
 @bot.on_message(filters.command("ua"))
 async def unauthorize_user(bot: Client, m: Message):
-    if m.from_user.id == 5631563685:
+    if m.from_user.id != Config.ADMIN_ID:
         try:
             user_to_unauthorize = int(m.text.split(' ', 1)[1])
             # Remove user from the authorized collection
@@ -153,42 +153,11 @@ def track_unauthorized_user(user_id):
     # Check if the user_id is not already in the collection
     if not unauthorized_users_collection.find_one({'user_id': user_id}):
         unauthorized_users_collection.insert_one({'user_id': user_id, 'timestamp': time.time()})
-        
-#broadcast
-@bot.on_message(filters.command("broadcast"))
-async def broadcast_message(bot: Client, message: Message):
-    # Check if the user is the owner
-    if message.from_user.id != Config.OWNER_ID:
-        await message.reply("You are not my owner to use this command.")
-        return
-
-    # Get all interaction data
-    interaction_data = interactions_collection.find()
-
-    # Extract unique user IDs from interaction data
-    user_ids = set()
-    for data in interaction_data:
-        user_id = data.get('user_id')
-        if user_id:
-            user_ids.add(user_id)
-
-    # Broadcast message to all unique users
-    for user_id in user_ids:
-        try:
-            await bot.send_message(
-                chat_id=user_id,
-                text="This is a broadcast message to all users based on interactions."
-            )
-            await asyncio.sleep(1)  # Add a delay to avoid rate limits
-        except Exception as e:
-            print(f"Failed to send message to user {user_id}: {e}")
-
-    await message.reply("Broadcast completed successfully!")
 
 
 
 #Users Data
-@bot.on_message(filters.command("users"))
+@bot.on_message(filters.command("users")) & filters.user(Config.OWNER_ID))
 async def extract_user_data(bot: Client, message: Message):
     # Check if the user is the owner
     if message.from_user.id != Config.OWNER_ID:
@@ -225,12 +194,9 @@ async def extract_user_data(bot: Client, message: Message):
             file.write("\nAuthorized Users:\n\n")
             for user in authorized_users_data:
                 user_id = user.get('user_id', 'N/A')
-                username = user.get('username', 'N/A')
-                full_name = user.get('full_name', 'N/A')
                 timestamp = user.get('timestamp', 'N/A')                
                 file.write(f"User ID: {user_id}\n")
-                file.write(f"Username: {username}\n")
-                file.write(f"Full Name: {full_name}\n")
+                file.write(f"Timestamp: {timestamp}\n")                
                 file.write("------\n")
 
         # Append unauthorized users data to the file
