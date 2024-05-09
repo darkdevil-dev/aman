@@ -29,7 +29,7 @@ from datetime import datetime
 
 # Connect to MongoDB using the URI from your config file
 mongo_client = pymongo.MongoClient(Config.MONGO_URI)
-db = mongo_client['aman1']  # Replace 'your_database_name' with your database name
+db = mongo_client['aman2']  # Replace 'your_database_name' with your database name
 interactions_collection = db['interactions']  # Collection for tracking interactions
 authorized_users_collection = db['authorized_users']
 unauthorized_users_collection = db['unauthorized_users']
@@ -105,7 +105,7 @@ async def restart_handler(_, m):
 # Handler to authorize a user
 @bot.on_message(filters.command("a"))
 async def authorize_user(bot: Client, m: Message):
-    if m.from_user.id == 6004871730:  # Replace with your bot's admin ID
+    if m.from_user.id == 7156997775:  # Replace with your bot's admin ID
         try:
             user_to_authorize = int(m.text.split(' ', 1)[1])
             # Check if user ID already exists
@@ -132,7 +132,7 @@ def track_authorized_user(user_id):
 # Handler to unauthorize a user
 @bot.on_message(filters.command("ua"))
 async def unauthorize_user(bot: Client, m: Message):
-    if m.from_user.id == 6004871730:
+    if m.from_user.id == 7156997775:
         try:
             user_to_unauthorize = int(m.text.split(' ', 1)[1])
             # Remove user from the authorized collection
