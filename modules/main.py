@@ -122,7 +122,12 @@ async def authorize_user(bot: Client, m: Message):
             await m.reply("Invalid user ID provided.", quote=True)
     else:
         await m.reply("You are not authorized to perform this action.", quote=True)
-
+        
+# Helper function to track unauthorized users
+def track_authorized_user(user_id):
+    # Check if the user_id is not already in the collection
+    if not authorized_users_collection.find_one({'user_id': user_id}):
+        authorized_users_collection.insert_one({'user_id': user_id, 'timestamp': time.time()})
 
 # Handler to unauthorize a user
 @bot.on_message(filters.command("ua"))
@@ -149,6 +154,38 @@ def track_unauthorized_user(user_id):
     if not unauthorized_users_collection.find_one({'user_id': user_id}):
         unauthorized_users_collection.insert_one({'user_id': user_id, 'timestamp': time.time()})
         
+#broadcast
+@bot.on_message(filters.command("broadcast"))
+async def broadcast_message(bot: Client, message: Message):
+    # Check if the user is the owner
+    if message.from_user.id != Config.OWNER_ID:
+        await message.reply("You are not my owner to use this command.")
+        return
+
+    # Get all interaction data
+    interaction_data = interactions_collection.find()
+
+    # Extract unique user IDs from interaction data
+    user_ids = set()
+    for data in interaction_data:
+        user_id = data.get('user_id')
+        if user_id:
+            user_ids.add(user_id)
+
+    # Broadcast message to all unique users
+    for user_id in user_ids:
+        try:
+            await bot.send_message(
+                chat_id=user_id,
+                text="This is a broadcast message to all users based on interactions."
+            )
+            await asyncio.sleep(1)  # Add a delay to avoid rate limits
+        except Exception as e:
+            print(f"Failed to send message to user {user_id}: {e}")
+
+    await message.reply("Broadcast completed successfully!")
+
+
 
 #Users Data
 @bot.on_message(filters.command("users"))
@@ -212,7 +249,7 @@ async def extract_user_data(bot: Client, message: Message):
         await bot.send_document(
             chat_id=message.from_user.id,
             document=user_data_filename,
-            caption="Here is the extracted user data including interactions, authorized, and unauthorized users."
+            caption="**By : @LegendRobot**"
         )
     except Exception as e:
         await message.reply(f"Failed to send document: {e}")
