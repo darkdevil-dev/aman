@@ -157,7 +157,7 @@ def track_unauthorized_user(user_id):
 
 
 #Users Data
-@bot.on_message(filters.command("users")) & filters.user(Config.OWNER_ID))
+@bot.on_message(filters.command("users") & filters.user(Config.OWNER_ID))
 async def extract_user_data(bot: Client, message: Message):
     # Check if the user is the owner
     if message.from_user.id != Config.OWNER_ID:
