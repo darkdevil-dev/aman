@@ -148,16 +148,14 @@ def track_unauthorized_user(user_id):
     # Check if the user_id is not already in the collection
     if not unauthorized_users_collection.find_one({'user_id': user_id}):
         unauthorized_users_collection.insert_one({'user_id': user_id, 'timestamp': time.time()})
-
-
-
+        
 
 #Users Data
 @bot.on_message(filters.command("users"))
 async def extract_user_data(bot: Client, message: Message):
     # Check if the user is the owner
     if message.from_user.id != Config.OWNER_ID:
-        await message.reply("You are not authorized to use this command.")
+        await message.reply("You are not my owner to use this command.")
         return
 
     # Get all interaction data
@@ -173,17 +171,9 @@ async def extract_user_data(bot: Client, message: Message):
             chat_id = data.get('chat_id', 'N/A')
             timestamp = data.get('timestamp', 'N/A')
             command = data.get('command', 'N/A')
-
-            # Ensure `timestamp` is converted to an integer
-            try:
-                timestamp = int(timestamp)
-                timestamp_formatted = datetime.datetime.fromtimestamp(timestamp).strftime('%Y-%m-%d %H:%M:%S')
-            except (ValueError, TypeError):
-                timestamp_formatted = 'Invalid Timestamp'
-
             file.write(f"User ID: {user_id}\n")
             file.write(f"Chat ID: {chat_id}\n")
-            file.write(f"Timestamp: {timestamp_formatted}\n")
+            file.write(f"Timestamp: {timestamp}\n")
             file.write(f"Command: {command}\n")
             file.write("------\n")
             count += 1
@@ -200,19 +190,10 @@ async def extract_user_data(bot: Client, message: Message):
                 user_id = user.get('user_id', 'N/A')
                 username = user.get('username', 'N/A')
                 full_name = user.get('full_name', 'N/A')
-                timestamp = user.get('timestamp', 'N/A')
-
-                # Ensure `timestamp` is converted to an integer
-                try:
-                    timestamp = int(timestamp)
-                    timestamp_formatted = datetime.datetime.fromtimestamp(timestamp).strftime('%Y-%m-%d %H:%M:%S')
-                except (ValueError, TypeError):
-                    timestamp_formatted = 'Invalid Timestamp'
-
+                timestamp = user.get('timestamp', 'N/A')                
                 file.write(f"User ID: {user_id}\n")
                 file.write(f"Username: {username}\n")
                 file.write(f"Full Name: {full_name}\n")
-                file.write(f"Timestamp: {timestamp_formatted}\n")
                 file.write("------\n")
 
         # Append unauthorized users data to the file
@@ -222,16 +203,8 @@ async def extract_user_data(bot: Client, message: Message):
             for user in unauthorized_users_data:
                 user_id = user.get('user_id', 'N/A')
                 timestamp = user.get('timestamp', 'N/A')
-
-                # Ensure `timestamp` is converted to an integer
-                try:
-                    timestamp = int(timestamp)
-                    timestamp_formatted = datetime.datetime.fromtimestamp(timestamp).strftime('%Y-%m-%d %H:%M:%S')
-                except (ValueError, TypeError):
-                    timestamp_formatted = 'Invalid Timestamp'
-
                 file.write(f"User ID: {user_id}\n")
-                file.write(f"Timestamp: {timestamp_formatted}\n")
+                file.write(f"Timestamp: {timestamp}\n")
                 file.write("------\n")
 
     # Send the extracted user data file to the user
@@ -246,7 +219,6 @@ async def extract_user_data(bot: Client, message: Message):
 
     # Clean up: delete the temporary TXT file
     os.remove(user_data_filename)
-            
 
 
 @bot.on_message(filters.command(["devil"]))
