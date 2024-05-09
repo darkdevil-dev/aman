@@ -29,7 +29,7 @@ from datetime import datetime
 
 # Connect to MongoDB using the URI from your config file
 mongo_client = pymongo.MongoClient(Config.MONGO_URI)
-db = mongo_client['shizuka']  # Replace 'your_database_name' with your database name
+db = mongo_client['aman1']  # Replace 'your_database_name' with your database name
 interactions_collection = db['interactions']  # Collection for tracking interactions
 authorized_users_collection = db['authorized_users']
 unauthorized_users_collection = db['unauthorized_users']
