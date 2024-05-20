@@ -195,14 +195,22 @@ async def send_doc(bot: Client, m: Message,cc,ka,cc1,prog,count,name):
 async def send_vid(bot: Client, m: Message,cc,filename,thumb,name,prog):
     subprocess.run(f'ffmpeg -i "{filename}" -ss 00:01:00 -vframes 1 "{filename}.jpg"', shell=True)
     await prog.delete (True)
-    reply = await m.reply_text(f"**⥣ Uploading ...** » `{name}`")
+    reply = await m.reply_text(f"<b>{str(count).zfill(3)}.</b> {name1}\n\n━━━━━━━✦✗✦━━━━━━━\n\nUploading...!")
     try:
         if thumb == "no":
             thumbnail = f"{filename}.jpg"
         else:
             thumbnail = thumb
     except Exception as e:
-        await m.reply_text(str(e))
+        await bot.send_message(
+            chat_id=Config.CHANNEL_ID,
+            text=(
+                f"**Downloading Interrupted**\n"
+                f"**Error**: {str(e)}\n"
+                f"**Name**: {name}\n"
+                f"**Link**: `{url}`"
+        )
+    )
 
     dur = int(duration(filename))
 
