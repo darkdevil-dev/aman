@@ -202,15 +202,7 @@ async def send_vid(bot: Client, m: Message,cc,filename,thumb,name,prog):
         else:
             thumbnail = thumb
     except Exception as e:
-        await bot.send_message(
-            chat_id=Config.CHANNEL_ID,
-            text=(
-                f"**Downloading Interrupted**\n"
-                f"**Error**: {str(e)}\n"
-                f"**Name**: {name}\n"
-                f"**Link**: `{url}`"
-        )
-    )
+        await m.reply_text(str(e))
 
     dur = int(duration(filename))
 
