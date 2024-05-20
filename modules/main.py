@@ -41,6 +41,7 @@ bot = Client(
     bot_token=Config.BOT_TOKEN)
 
 
+CHANNEL_ID =Config.CHANNEL_ID
 
 @bot.on_message(filters.command(["start"]))
 async def account_login(bot: Client, m: Message):
@@ -96,9 +97,9 @@ async def stats_command(bot: Client, m: Message):
     await m.reply_text(stats_message, quote=True)
     
 
-@bot.on_message(filters.command("stop"))
+@bot.on_message(filters.command("cancel"))
 async def restart_handler(_, m):
-    await m.reply_text("**『ꜱᴛᴏᴘ ᴅᴇᴀʀ』**", True)
+    await m.reply_text("✅ Task cancelled successfully", True)
     os.execl(sys.executable, sys.executable, *sys.argv)
     
     
@@ -357,29 +358,9 @@ async def account_login(bot: Client, m: Message):
 
             try:  
                 
-                cc = f'''
-╭─《 **🚀 DAWNLOAD INFO** 》
-├ <b>Vid_id:</b> <code>{str(count).zfill(3)}</code>
-├ <b>Title:</b>  <code>{name1}</code>
-├ <b>Batch:</b> <code>{b_name}</code>
-├ <b>Quality:</b> <code>{raw_text2}</code>
-╰ <b>Download by:</b> {MR}
-
-━━━━━━━✦✗✦━━━━━━━
-**ᒍOIᑎ ➭ [ԼЄƓЄƝƊ ƲƝƖƠƝ](https://t.me/LegendUnion)**
-'''
+                cc = f'''<b>{str(count).zfill(3)}.</b> {name1}\n\n<b>Batch »</b> {b_name}\n\n<b>Quality »</b> {raw_text2}\n\n<b>Download by » {MR}</b>'''
                 
-                cc1 = f'''
-╭─《 **🚀 DAWNLOAD INFO** 》
-├ <b>Pdf_Id:</b> <code>{str(count).zfill(3)}</code>
-├ <b>Title:</b>  <code>{name1}</code>
-├ <b>Batch:</b> <code>{b_name}</code>
-├ <b>Quality:</b> <code>{raw_text2}</code>
-╰ <b>Download by:</b> {MR}
-
-━━━━━━━✦✗✦━━━━━━━
-**ᒍOIᑎ ➭ [ԼЄƓЄƝƊ ƲƝƖƠƝ](https://t.me/LegendUnion)**
-'''
+                cc1 = f'''<b>{str(count).zfill(3)}.</b> {name1}\n\n<b>Batch »</b> {b_name}\n\n<b>Download by » {MR}</b>'''
                 if "drive" in url:
                     try:
                         ka = await helper.download(url, name)
@@ -405,7 +386,7 @@ async def account_login(bot: Client, m: Message):
                         time.sleep(e.x)
                         continue
                 else:
-                    Show = f"**《 ❣️ DAWNLOADING INFO 》**\n\n**🍁 𝐍𝐀𝐌𝐄 »** `{name}`\n❄ 𝐐𝐔𝐀𝐋𝐈𝐓𝐘  » `{raw_text2}`\n\n**🔗 𝐔𝐑𝐋 »** `{url}`"
+                    Show = f"<b>{str(count).zfill(3)}.</b> {name1}\n\n━━━━━━━✦✗✦━━━━━━━\n\nMerging...!"
                     prog = await m.reply_text(Show)
                     res_file = await helper.download_video(url, cmd, name)
                     filename = res_file
@@ -415,14 +396,20 @@ async def account_login(bot: Client, m: Message):
                     time.sleep(1)
 
             except Exception as e:
-                await m.reply_text(
-                    f"**𝙳𝚘𝚠𝚗𝚕𝚘𝚊𝚍𝚒𝚗𝚐 𝙸𝚗𝚝𝚎𝚛𝚞𝚙𝚝𝚎𝚍 **\n{str(e)}\n**Name** » {name}\n**Link** » `{url}`"
-                )
+                await app.send_message(
+                    chat_id=CHANNEL_ID,
+                    text=(
+                        f"**Downloading Interrupted**\n"
+                        f"**Error**: {str(e)}\n"
+                        f"**Name**: {name}\n"
+                        f"**Link**: `{url}`"
+        )
+    )
                 continue
 
     except Exception as e:
         await m.reply_text(e)
-    await m.reply_text("**『ᴅᴏɴᴇ ᴅᴇᴀʀ』**")
+    await m.reply_text("✅ Done. Successfully dowloaded {len(links)} links.")
 
 
 @bot.on_message(filters.command("help"))
