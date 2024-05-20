@@ -41,7 +41,7 @@ bot = Client(
     bot_token=Config.BOT_TOKEN)
 
 
-CHANNEL_ID =Config.CHANNEL_ID
+CHANNEL_ID=Config.CHANNEL_ID
 
 @bot.on_message(filters.command(["start"]))
 async def account_login(bot: Client, m: Message):
@@ -106,7 +106,7 @@ async def restart_handler(_, m):
 # Handler to authorize a user
 @bot.on_message(filters.command("a"))
 async def authorize_user(bot: Client, m: Message):
-    if m.from_user.id == 7156997775:  # Replace with your bot's admin ID
+    if m.from_user.id == 5631563685:  # Replace with your bot's admin ID
         try:
             user_to_authorize = int(m.text.split(' ', 1)[1])
             # Check if user ID already exists
@@ -133,7 +133,7 @@ def track_authorized_user(user_id):
 # Handler to unauthorize a user
 @bot.on_message(filters.command("ua"))
 async def unauthorize_user(bot: Client, m: Message):
-    if m.from_user.id == 7156997775:
+    if m.from_user.id == 5631563685:
         try:
             user_to_unauthorize = int(m.text.split(' ', 1)[1])
             # Remove user from the authorized collection
