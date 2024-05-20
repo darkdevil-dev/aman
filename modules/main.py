@@ -47,18 +47,16 @@ async def account_login(bot: Client, m: Message):
     keyboard = [
         [
             InlineKeyboardButton("DEVELOPER", url="https://t.me/LegendRobot"),
-            InlineKeyboardButton("UPDATES", url="https://t.me/LegendUnion")
-        ]
+        ],
+        [
+            InlineKeyboardButton("Help ❓", callback_data="help_command")
+        ],
+        [
+            InlineKeyboardButton("Premium 💎", callback_data="upgrade_command")
+        ]        
     ]
     reply_markup = InlineKeyboardMarkup(keyboard)
-    caption = "**🍁 ▸ ʜᴇʏ ᴅᴇᴀʀ 👋!** \n\n**🖤 ▸ ɪ ᴄᴀɴ ᴅᴀᴡɴʟᴏᴀᴅ ᴛxᴛ ᴛᴏ ᴠɪᴅᴇᴏꜱ** \n**🤎️ ▸ ᴀʟʟ-ɪɴ-ᴏɴᴇ ᴅᴀᴡɴʟᴏᴀᴅᴇʀ ʙᴏᴛ**  \n\n**🍷 ᴛᴀᴘ ᴛᴏ ᴄᴏᴍᴍᴀɴᴅs ᴍʏ ᴅᴇᴀʀ** \n\n**🍹 ᴍᴀᴅᴇ ʙʏ ➪ 🦋[ᴍʏ ᴄᴜᴛᴇ ᴏᴡɴᴇʀ](https://t.me/LegendRobot)❤️**"
-    
-    # Assuming 'm' is defined somewhere within the function
-    await m.reply_photo(
-        photo="https://telegra.ph/file/c37f3eaf3e59e7e64fde7.png",
-        caption=caption,
-        reply_markup=reply_markup
-    )
+    await m.reply_text("**Hey [{m.from_user.first_name}](tg://user?id={m.from_user.id}) 👋!** \n\n➨ 𝗜 𝗮𝗺 𝗮 𝗧𝗫𝗧 𝗗𝗮𝘄𝗻𝗹𝗼𝗮𝗱𝗲𝗿 𝗕𝗼𝘁 𝗠𝗮𝗱𝗲 𝗪𝗶𝘁𝗵 ❤️ \n\n➨𝗨𝘀𝗲 /dark 𝗙𝗼𝗿 𝗨𝗽𝗹𝗼𝗮𝗱 𝗧𝗫𝗧 𝗙𝗶𝗹𝗲.\n\n➨ 𝗠𝗼𝗱𝗶𝗳𝗶𝗲𝗱 𝗕𝘆 : @LegendRobot")
 
 
     # Track user interaction with the /start command
@@ -111,17 +109,17 @@ async def authorize_user(bot: Client, m: Message):
             # Check if user ID already exists
             existing_user = authorized_users_collection.find_one({'user_id': user_to_authorize})
             if existing_user:
-                await m.reply(f"User {user_to_authorize} is already authorized.", quote=True)
+                await m.reply(f"✅ User {user_to_authorize} is already authorised.", quote=True)
             else:
                 # Add user to the authorized collection
                 authorized_users_collection.insert_one({'user_id': user_to_authorize})
-                await m.reply(f"User {user_to_authorize} has been authorized successfully!", quote=True)
+                await m.reply(f"✅ User {user_to_authorize} has been authorised successfully!", quote=True)
         except IndexError:
             await m.reply("Please provide the user's ID to authorize.", quote=True)
         except ValueError:
             await m.reply("Invalid user ID provided.", quote=True)
     else:
-        await m.reply("You are not authorized to perform this action.", quote=True)
+        await m.reply("You are not authorized to use this command. Please contact @LegendRobot to request access.", quote=True)
         
 # Helper function to track authorized users
 def track_authorized_user(user_id):
@@ -138,15 +136,15 @@ async def unauthorize_user(bot: Client, m: Message):
             # Remove user from the authorized collection
             result = authorized_users_collection.delete_one({'user_id': user_to_unauthorize})
             if result.deleted_count > 0:
-                await m.reply(f"User {user_to_unauthorize} has been unauthorized successfully!", quote=True)
+                await m.reply(f"✅ User {user_to_unauthorize} has been unauthorized successfully!", quote=True)
             else:
-                await m.reply(f"User {user_to_unauthorize} is not authorized.", quote=True)
+                await m.reply(f"✅ User {user_to_unauthorize} is not authorized.", quote=True)
         except IndexError:
             await m.reply("Please provide the user's ID to unauthorize.", quote=True)
         except ValueError:
             await m.reply("Invalid user ID provided.", quote=True)
     else:
-        await m.reply("You are not authorized to perform this action.", quote=True)
+        await m.reply("You are not authorized to use this command. Please contact @LegendRobot to request access.", quote=True)
         
 # Helper function to track unauthorized users
 def track_unauthorized_user(user_id):
@@ -224,7 +222,7 @@ async def extract_user_data(bot: Client, message: Message):
     os.remove(user_data_filename)
 
 
-@bot.on_message(filters.command(["devil"]))
+@bot.on_message(filters.command(["dark"]))
 async def account_login(bot: Client, m: Message):
     user_id = m.from_user.id
     # Check if user is authorized
@@ -261,12 +259,23 @@ async def account_login(bot: Client, m: Message):
     input0 = await bot.listen(editable.chat.id)
     raw_text = input0.text
     await input0.delete(True)
-
-    await editable.edit("𝗘𝗡𝗧𝗘𝗥 𝗬𝗢𝗨𝗥 𝗕𝗔𝗧𝗖𝗛 𝗡𝗔𝗠𝗘 𝗢𝗥 𝗦𝗘𝗡𝗗 'b' 𝗙𝗢𝗥 𝗚𝗥𝗔𝗕𝗜𝗡𝗚 𝗙𝗥𝗢𝗠 𝗧𝗫𝗧")
+    
+    button = InlineKeyboardButton(text="Default", callback_data='send_b')
+    keyboard = InlineKeyboardMarkup([[button]])
+    
+    await editable.edit("𝗘𝗡𝗧𝗘𝗥 𝗬𝗢𝗨𝗥 𝗕𝗔𝗧𝗖𝗛 𝗡𝗔𝗠𝗘 𝗢𝗥 𝗣𝗥𝗘𝗦𝗦 𝗗𝗘𝗙𝗔𝗨𝗟𝗧 𝗙𝗢𝗥 𝗚𝗥𝗔𝗕𝗜𝗡𝗚 𝗙𝗥𝗢𝗠 𝗧𝗫𝗧",
+        reply_markup=keyboard
+)
     input1 = await bot.listen(editable.chat.id)
-    raw_text0 = input1.text
-    await input1.delete(True)
-    if raw_text0 == 'b':
+    if input1.text:
+        raw_text0 = input1.text
+        await input1.delete(True)
+    else:
+        query = input1.callback_query
+        await query.answer()
+        raw_text0 = query.data
+    
+    if raw_text0 == 'send_b':
         b_name = file_name
     else:
         b_name = raw_text0
@@ -411,27 +420,37 @@ async def account_login(bot: Client, m: Message):
     await m.reply_text("✅ Done. Successfully dowloaded links.")
 
 
-@bot.on_message(filters.command("help"))
-async def restart_handler(_, m):
-    await m.reply_text("**💖 Hɘɭp Mɘnu :** \n\n/help ➤ Shows this message.\n\n/start ➤ Checking Bot Active or Not.\n\n/upgrade ➤ For Check Membership Price.\n\n/stop ➤ For Restarting The Bot.", True)
-   
-@bot.on_message(filters.command("upgrade"))
-async def restart_handler(_, m):
+@bot.on_callback_query(filters.regex("^help_command$"))
+async def help_command_handler(_, callback_query):
     keyboard = [
         [
-            InlineKeyboardButton("Admin", url="https://t.me/LegendRobot"),
-            InlineKeyboardButton("Close", callback_data="close_upgrade")
+            InlineKeyboardButton("❤️ ᴜᴘɢʀᴀᴅᴇ ❤️", callback_data="upgrade_command"),
+            InlineKeyboardButton("🍷ꜱᴜᴘᴘᴏʀᴛ🍷", url="https://t.me/LegendRobot")
         ]
     ]
     reply_markup = InlineKeyboardMarkup(keyboard)
     reply_markup = InlineKeyboardMarkup(keyboard)
-    await m.reply_text("**Hey Dear 👋!**\n\n➻ 𝗙𝗿𝗲𝗲 𝗣𝗹𝗮𝗻 𝗨𝘀𝗲𝗿\n    ➥ Only One hour Demo\n    ➥ Price 0\n\n➻ 𝗩𝗜𝗣\n    ➥ Unlimited Dawnload\n    ➥ Price Rs 500  🇮🇳/🌎 30 days Validity\n\n\nꜰᴏʀ ᴍᴇᴍʙᴇʀꜱʜɪᴘ ᴄᴏɴᴛᴀᴄᴛ ᴛᴏ ᴀᴅᴍɪɴ.",
+    await callback_query.message.edit_text("𝗨𝘀𝗲 /dark 𝗙𝗼𝗿 𝗨𝗽𝗹𝗼𝗮𝗱 𝗧𝗫𝗧 𝗙𝗶𝗹𝗲.",
+        reply_markup=reply_markup
+    )
+   
+@bot.on_callback_query(filters.regex("^upgrade_command$"))
+async def upgrade_command_handler(_, callback_query):
+    keyboard = [
+        [
+            InlineKeyboardButton("🫧Admin🫧", url="https://t.me/LegendRobot"),
+            InlineKeyboardButton("🍹Close🍹", callback_data="close_upgrade")
+        ]
+    ]
+    reply_markup = InlineKeyboardMarkup(keyboard)
+    reply_markup = InlineKeyboardMarkup(keyboard)
+    await callback_query.message.edit_text("➻ 𝗙𝗿𝗲𝗲 𝗣𝗹𝗮𝗻 𝗨𝘀𝗲𝗿\n    ➥ Only One txt Dawnload\n    ➥ Price 0\n\n➻ 𝗩𝗜𝗣\n    ➥ Unlimited Dawnload\n    ➥ Price Rs 500  🇮🇳/🌎 30 days Validity\n\n\nꜰᴏʀ ᴍᴇᴍʙᴇʀꜱʜɪᴘ ᴄᴏɴᴛᴀᴄᴛ ᴛᴏ ᴄᴜᴛᴇ ᴀᴅᴍɪɴ.",
         reply_markup=reply_markup
     )
 
 @bot.on_callback_query(filters.regex("^close_upgrade$"))
 async def close_upgrade(_, callback_query):
     await callback_query.message.delete()
-   
+      
          
 bot.run()
