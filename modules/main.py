@@ -396,7 +396,7 @@ async def account_login(bot: Client, m: Message):
                     time.sleep(1)
 
             except Exception as e:
-                await app.send_message(
+                await bot.send_message(
                     chat_id=CHANNEL_ID,
                     text=(
                         f"**Downloading Interrupted**\n"
