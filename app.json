@@ -27,6 +27,10 @@
             "description": "Owner ID of the bot",
             "required": true
         },
+        "CHANNEL_ID": {
+            "description": "Logs chennal ID of the bot",
+            "required": true
+        },        
         "MONGO_URI": {
             "description": "Your MongoDB URI",
             "required": true
