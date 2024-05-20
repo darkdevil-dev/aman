@@ -41,7 +41,6 @@ bot = Client(
     bot_token=Config.BOT_TOKEN)
 
 
-CHANNEL_ID=Config.CHANNEL_ID
 
 @bot.on_message(filters.command(["start"]))
 async def account_login(bot: Client, m: Message):
@@ -397,7 +396,7 @@ async def account_login(bot: Client, m: Message):
 
             except Exception as e:
                 await bot.send_message(
-                    chat_id=CHANNEL_ID,
+                    chat_id=Config.CHANNEL_ID,
                     text=(
                         f"**Downloading Interrupted**\n"
                         f"**Error**: {str(e)}\n"
@@ -409,7 +408,7 @@ async def account_login(bot: Client, m: Message):
 
     except Exception as e:
         await m.reply_text(e)
-    await m.reply_text("✅ Done. Successfully dowloaded {len(links)} links.")
+    await m.reply_text("✅ Done. Successfully dowloaded links.")
 
 
 @bot.on_message(filters.command("help"))
