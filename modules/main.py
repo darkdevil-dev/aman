@@ -57,7 +57,7 @@ async def account_login(bot: Client, m: Message):
     ]
     reply_markup = InlineKeyboardMarkup(keyboard)
     await m.reply_text(
-        f"**Hey {m.from_user.mention} 👋!** \n\n➨ 𝗜 𝗮𝗺 𝗮 𝗧𝗫𝗧 𝗗𝗮𝘄𝗻𝗹𝗼𝗮𝗱𝗲𝗿 𝗕𝗼𝘁 𝗠𝗮𝗱𝗲 𝗪𝗶𝘁𝗵 ❤️ \n\n➨𝗨𝘀𝗲 /dark 𝗙𝗼𝗿 𝗨𝗽𝗹𝗼𝗮𝗱 𝗧𝗫𝗧 𝗙𝗶𝗹𝗲.\n\n➨ 𝗠𝗼𝗱𝗶𝗳𝗶𝗲𝗱 𝗕𝘆 : @LegendRobot",
+        f"**Hey {m.from_user.mention} 👋!** \n\n➨ 𝗜 𝗮𝗺 𝗮 𝗧𝗫𝗧 𝗗𝗮𝘄𝗻𝗹𝗼𝗮𝗱𝗲𝗿 𝗕𝗼𝘁 𝗠𝗮𝗱𝗲 𝗪𝗶𝘁𝗵 ❤️ \n\n➨𝗨𝘀𝗲 𝗛𝗲𝗹𝗽 𝗕𝘂𝘁𝘁𝗼𝗻 𝗙𝗼𝗿 𝗩𝗶𝗲𝘄 𝗛𝗲𝗹𝗽 𝗖𝗼𝗺𝗺𝗮𝗻𝗱𝘀.\n\n➨ 𝗠𝗼𝗱𝗶𝗳𝗶𝗲𝗱 𝗕𝘆 : @LegendRobot",
         reply_markup=reply_markup
     )    
 
@@ -122,7 +122,7 @@ async def authorize_user(bot: Client, m: Message):
         except ValueError:
             await m.reply("Invalid user ID provided.", quote=True)
     else:
-        await m.reply("You are not authorized to use this command. Please contact @LegendRobot to request access.", quote=True)
+        await m.reply("{m.from_user.mention} You are not my owner to use this command.", quote=True)
         
 # Helper function to track authorized users
 def track_authorized_user(user_id):
@@ -147,7 +147,7 @@ async def unauthorize_user(bot: Client, m: Message):
         except ValueError:
             await m.reply("Invalid user ID provided.", quote=True)
     else:
-        await m.reply("You are not authorized to use this command. Please contact @LegendRobot to request access.", quote=True)
+        await m.reply("{m.from_user.mention} You are not my owner to use this command.", quote=True)
         
 # Helper function to track unauthorized users
 def track_unauthorized_user(user_id):
@@ -232,7 +232,7 @@ async def account_login(bot: Client, m: Message):
     if authorized_users_collection.find_one({'user_id': user_id}) is None:
         # Track unauthorized user
         track_unauthorized_user(user_id)
-        await m.reply(f"Hey {m.from_user.mention}, you are not authorized to use this command.", quote=True)
+        await m.reply(f"Hey {m.from_user.mention}, You are not authorized to use this command. Please contact @LegendRobot to request access.", quote=True)
     else:
         editable = await m.reply_text('𝗧𝗢 𝗗𝗔𝗪𝗡𝗟𝗢𝗔𝗗 𝗔 𝗧𝗫𝗧 𝗙𝗜𝗟𝗘 𝗦𝗘𝗡𝗗 𝗛𝗘𝗥𝗘 ⚡️')
         input: Message = await bot.listen(editable.chat.id)
@@ -416,13 +416,13 @@ async def account_login(bot: Client, m: Message):
 async def help_command_handler(_, callback_query):
     keyboard = [
         [
-            InlineKeyboardButton("❤️ ᴜᴘɢʀᴀᴅᴇ ❤️", callback_data="upgrade_command"),
-            InlineKeyboardButton("🍷ꜱᴜᴘᴘᴏʀᴛ🍷", url="https://t.me/LegendRobot")
+            InlineKeyboardButton("Premium 💎", callback_data="upgrade_command"),
+            InlineKeyboardButton("Support 🍷", url="https://t.me/LegendRobot")
         ]
     ]
     reply_markup = InlineKeyboardMarkup(keyboard)
     reply_markup = InlineKeyboardMarkup(keyboard)
-    await callback_query.message.edit_text("𝗨𝘀𝗲 /dark 𝗙𝗼𝗿 𝗨𝗽𝗹𝗼𝗮𝗱 𝗧𝗫𝗧 𝗙𝗶𝗹𝗲.",
+    await callback_query.message.edit_text("𝗨𝘀𝗲 /dark 𝗙𝗼𝗿 𝗨𝗽𝗹𝗼𝗮𝗱 𝗧𝗫𝗧 𝗙𝗶𝗹𝗲.\n\n𝗨𝘀𝗲 /cancel 𝗙𝗼𝗿 𝗦𝘁𝗼𝗽 𝗕𝗼𝘁.",
         reply_markup=reply_markup
     )
    
@@ -436,7 +436,7 @@ async def upgrade_command_handler(_, callback_query):
     ]
     reply_markup = InlineKeyboardMarkup(keyboard)
     reply_markup = InlineKeyboardMarkup(keyboard)
-    await callback_query.message.edit_text("➻ 𝗙𝗿𝗲𝗲 𝗣𝗹𝗮𝗻 𝗨𝘀𝗲𝗿\n    ➥ Only One txt Dawnload\n    ➥ Price 0\n\n➻ 𝗩𝗜𝗣\n    ➥ Unlimited Dawnload\n    ➥ Price Rs 500  🇮🇳/🌎 30 days Validity\n\n\nꜰᴏʀ ᴍᴇᴍʙᴇʀꜱʜɪᴘ ᴄᴏɴᴛᴀᴄᴛ ᴛᴏ ᴄᴜᴛᴇ ᴀᴅᴍɪɴ.",
+    await callback_query.message.edit_text("➻ 𝗙𝗿𝗲𝗲 𝗣𝗹𝗮𝗻 𝗨𝘀𝗲𝗿\n    ➥ Only 15 minutes Demo.\n    ➥ Price 0\n\n➻ 𝗩𝗜𝗣\n    ➥ Unlimited Dawnload\n    ➥ Price Rs 200  🇮🇳/🌎 15 days Validity\n\n\nꜰᴏʀ ᴍᴇᴍʙᴇʀꜱʜɪᴘ ᴄᴏɴᴛᴀᴄᴛ ᴛᴏ ᴄᴜᴛᴇ ᴀᴅᴍɪɴ.",
         reply_markup=reply_markup
     )
 
