@@ -56,7 +56,8 @@ async def account_login(bot: Client, m: Message):
         ]        
     ]
     reply_markup = InlineKeyboardMarkup(keyboard)
-    await m.reply_text(f"**Hey [{m.from_user.first_name}](tg://user?id={m.from_user.id}) 👋!** \n\n➨ 𝗜 𝗮𝗺 𝗮 𝗧𝗫𝗧 𝗗𝗮𝘄𝗻𝗹𝗼𝗮𝗱𝗲𝗿 𝗕𝗼𝘁 𝗠𝗮𝗱𝗲 𝗪𝗶𝘁𝗵 ❤️ \n\n➨𝗨𝘀𝗲 /dark 𝗙𝗼𝗿 𝗨𝗽𝗹𝗼𝗮𝗱 𝗧𝗫𝗧 𝗙𝗶𝗹𝗲.\n\n➨ 𝗠𝗼𝗱𝗶𝗳𝗶𝗲𝗱 𝗕𝘆 : @LegendRobot"
+    await m.reply_text(
+        f"**Hey {m.from_user.mention} 👋!** \n\n➨ 𝗜 𝗮𝗺 𝗮 𝗧𝗫𝗧 𝗗𝗮𝘄𝗻𝗹𝗼𝗮𝗱𝗲𝗿 𝗕𝗼𝘁 𝗠𝗮𝗱𝗲 𝗪𝗶𝘁𝗵 ❤️ \n\n➨𝗨𝘀𝗲 /dark 𝗙𝗼𝗿 𝗨𝗽𝗹𝗼𝗮𝗱 𝗧𝗫𝗧 𝗙𝗶𝗹𝗲.\n\n➨ 𝗠𝗼𝗱𝗶𝗳𝗶𝗲𝗱 𝗕𝘆 : @LegendRobot",
         reply_markup=reply_markup
     )    
 
@@ -261,30 +262,15 @@ async def account_login(bot: Client, m: Message):
     input0 = await bot.listen(editable.chat.id)
     raw_text = input0.text
     await input0.delete(True)
-    
-        button = InlineKeyboardButton(text="Default", callback_data='send_b')
-        keyboard = InlineKeyboardMarkup([[button]])
-    
-        await editable.edit("𝗘𝗡𝗧𝗘𝗥 𝗬𝗢𝗨𝗥 𝗕𝗔𝗧𝗖𝗛 𝗡𝗔𝗠𝗘 𝗢𝗥 𝗣𝗥𝗘𝗦𝗦 𝗗𝗘𝗙𝗔𝗨𝗟𝗧 𝗙𝗢𝗥 𝗚𝗥𝗔𝗕𝗜𝗡𝗚 𝗙𝗥𝗢𝗠 𝗧𝗫𝗧",
-            reply_markup=keyboard
-        )
-        
-        input1 = await bot.listen(editable.chat.id)
-        if input1.text:
-            raw_text0 = input1.text
-            await input1.delete(True)
-        elif input1.callback_query:
-            query = input1.callback_query
-            await query.answer()
-            raw_text0 = query.data
-            await input1.message.delete()  # Clear the callback query message
-        else:
-            raw_text0 = None
-        
-        if raw_text0 == 'send_b':
-            b_name = file_name
-        else:
-            b_name = raw_text0
+
+    await editable.edit("𝗘𝗡𝗧𝗘𝗥 𝗬𝗢𝗨𝗥 𝗕𝗔𝗧𝗖𝗛 𝗡𝗔𝗠𝗘 𝗢𝗥 𝗦𝗘𝗡𝗗 'b' 𝗙𝗢𝗥 𝗚𝗥𝗔𝗕𝗜𝗡𝗚 𝗙𝗥𝗢𝗠 𝗧𝗫𝗧")
+    input1 = await bot.listen(editable.chat.id)
+    raw_text0 = input1.text
+    await input1.delete(True)
+    if raw_text0 == 'b':
+        b_name = file_name
+    else:
+        b_name = raw_text0
     
 
     await editable.edit("𝗘𝗡𝗧𝗘𝗥 𝗥𝗘𝗦𝗢𝗟𝗨𝗧𝗜𝗢𝗡 🚀\n➥ 144,240,360,480,720,1080 \n\n𝗣𝗟𝗘𝗔𝗦𝗘 𝗖𝗛𝗢𝗢𝗦𝗘 𝗤𝗨𝗔𝗟𝗜𝗧𝗬")
