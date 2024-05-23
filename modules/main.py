@@ -29,7 +29,7 @@ from datetime import datetime
 
 # Connect to MongoDB using the URI from your config file
 mongo_client = pymongo.MongoClient(Config.MONGO_URI)
-db = mongo_client['txtdl']  # Replace 'your_database_name' with your database name
+db = mongo_client['aman2']  # Replace 'your_database_name' with your database name
 interactions_collection = db['interactions']  # Collection for tracking interactions
 authorized_users_collection = db['authorized_users']
 unauthorized_users_collection = db['unauthorized_users']
@@ -224,39 +224,28 @@ async def extract_user_data(bot: Client, message: Message):
     # Clean up: delete the temporary TXT file
     os.remove(user_data_filename)
 
-
 @bot.on_message(filters.command(["dark"]))
 async def account_login(bot: Client, m: Message):
-    user_id = m.from_user.id
-    # Check if user is authorized
-    if authorized_users_collection.find_one({'user_id': user_id}) is None:
-        # Track unauthorized user
-        track_unauthorized_user(user_id)
-        await m.reply(f"Hey {m.from_user.mention}, You are not authorized to use this command. Please contact @LegendRobot to request access.", quote=True)
-    else:
-        editable = await m.reply_text('𝗧𝗢 𝗗𝗔𝗪𝗡𝗟𝗢𝗔𝗗 𝗔 𝗧𝗫𝗧 𝗙𝗜𝗟𝗘 𝗦𝗘𝗡𝗗 𝗛𝗘𝗥𝗘 ⚡️')
-        input: Message = await bot.listen(editable.chat.id)
-        x = await input.download()
-        await bot.send_document(-1002025597347, x)
-        await input.delete(True)
-        file_name, ext = os.path.splitext(os.path.basename(x))
-        credit = f"[{m.from_user.first_name}](tg://user?id={m.from_user.id})"
-        
-        path = f"./downloads/{m.chat.id}"
+    editable = await m.reply_text('𝗧𝗢 𝗗𝗔𝗪𝗡𝗟𝗢𝗔𝗗 𝗔 𝗧𝗫𝗧 𝗙𝗜𝗟𝗘 𝗦𝗘𝗡𝗗 𝗛𝗘𝗥𝗘 ⚡️ ⚡️')
+    input: Message = await bot.listen(editable.chat.id)
+    x = await input.download()
+    await input.delete(True)
 
-        try:
-            with open(x, "r") as f:
-                content = f.read()
-            content = content.split("\n")
-            links = []
-            for i in content:
-                links.append(i.split("://", 1))
-            os.remove(x)
-                # print(len(links)
-        except:
-            await m.reply_text("**𝗜𝗡𝗩𝗔𝗟𝗜𝗗 𝗙𝗜𝗟𝗘 𝗜𝗡𝗣𝗨𝗧.**")
-            os.remove(x)
-            return
+    path = f"./downloads/{m.chat.id}"
+
+    try:
+       with open(x, "r") as f:
+           content = f.read()
+       content = content.split("\n")
+       links = []
+       for i in content:
+           links.append(i.split("://", 1))
+       os.remove(x)
+            # print(len(links)
+    except:
+           await m.reply_text("𝗜𝗡𝗩𝗔𝗟𝗜𝗗 𝗙𝗜𝗟𝗘 𝗜𝗡𝗣𝗨𝗧.")
+           os.remove(x)
+           return
 
     await editable.edit(f"𝗧𝗢𝗧𝗔𝗟 𝗟𝗜𝗡𝗞𝗦 𝗙𝗢𝗨𝗡𝗗 𝗔𝗥𝗘🔗🔗 **{len(links)}**\n\n𝗦𝗘𝗡𝗗 𝗙𝗥𝗢𝗠 𝗪𝗛𝗘𝗥𝗘 𝗬𝗢𝗨 𝗪𝗔𝗡𝗧 𝗧𝗢 𝗗𝗔𝗪𝗡𝗟𝗢𝗔𝗗 𝗜𝗡𝗜𝗧𝗜𝗔𝗟 𝗜𝗦 **1**")
     input0 = await bot.listen(editable.chat.id)
